@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 
 const EventScheduleSection = () => {
   return (
-    <Card className="bg-baltic-beige/30 border-baltic-darkbeige mb-6">
+    <Card className="bg-baltic-blue/10 border-baltic-blue mb-6 shadow-sm">
       <CardContent className="pt-6">
         <div className="space-y-4">
           <div className="flex items-start space-x-2">
