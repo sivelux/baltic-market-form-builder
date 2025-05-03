@@ -421,7 +421,4 @@ const AdminDashboard = () => {
   );
 };
 
-// Import PaginationEllipsis for pagination
-const { PaginationEllipsis } = require('@/components/ui/pagination');
-
 export default AdminDashboard;
