@@ -40,10 +40,11 @@ const MarketForm: React.FC = () => {
     validateField(name, value);
     
     // Show/hide booth dimensions field based on selection
+    // Fix: Only show dimensions field for "inny wymiar" and "Food truck / przyczepa" options
     if (name === 'boothType') {
-      setShowBoothDimensions(value.includes('własny') || value.includes('Food truck'));
+      setShowBoothDimensions(value === 'Namiot własny, inny wymiar' || value === 'Food truck / przyczepa');
       // If hiding booth dimensions, clear any error
-      if (!value.includes('własny') && !value.includes('Food truck')) {
+      if (value !== 'Namiot własny, inny wymiar' && value !== 'Food truck / przyczepa') {
         setErrors(prev => {
           const newErrors = { ...prev };
           delete newErrors.boothDimensions;
