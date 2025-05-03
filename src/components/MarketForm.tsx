@@ -9,6 +9,7 @@ import ExhibitorInfoSection from './form/ExhibitorInfoSection';
 import TechnicalInfoSection from './form/TechnicalInfoSection';
 import LocationSection from './form/LocationSection';
 import TermsSection from './form/TermsSection';
+import EventScheduleSection from './form/EventScheduleSection';
 import { useFormValidation } from './form/FormValidation';
 
 interface MarketFormProps {
@@ -119,6 +120,8 @@ const MarketForm: React.FC<MarketFormProps> = ({ mapPdfUrl = "#" }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 w-full max-w-4xl mx-auto">
+      <EventScheduleSection />
+      
       {/* Dane wystawcy */}
       <FormSection title="Dane wystawcy">
         <ExhibitorInfoSection 
