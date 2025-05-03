@@ -15,7 +15,7 @@ const DetailedView: React.FC<DetailedViewProps> = ({ submission }) => {
   };
   
   return (
-    <div className="py-4 px-6 mt-2 bg-gray-50 rounded-md border border-gray-200">
+    <div className="w-full px-6 py-4 bg-gray-50 rounded-md border border-gray-200 shadow-sm mb-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
         {/* Group 1: Informacje podstawowe */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-4">
@@ -64,8 +64,8 @@ const DetailedView: React.FC<DetailedViewProps> = ({ submission }) => {
           <h3 className="font-bold text-baltic-blue border-b pb-1 mb-2">Informacje o stoisku</h3>
         </div>
         
-        {/* Booth Information Fields */}
-        {['category', 'products', 'location1', 'location2', 'location3', 'tent'].map((key) => {
+        {/* Booth Information Fields - Excluding products as it's now in main table */}
+        {['category', 'location1', 'location2', 'location3', 'tent'].map((key) => {
           const value = submission[key as keyof FormData];
           const formattedValue = formatValue(value);
           const label = formFieldLabels[key as keyof typeof formFieldLabels];
@@ -87,6 +87,14 @@ const DetailedView: React.FC<DetailedViewProps> = ({ submission }) => {
             </div>
           );
         })}
+        
+        {/* Products section - detailed view of products that's already summarized in the table */}
+        <div key="products" className="col-span-1 md:col-span-2 lg:col-span-3 bg-white rounded-md p-3 border border-gray-100 shadow-sm">
+          <div className="text-xs font-semibold text-gray-500 mb-1">{formFieldLabels.products}</div>
+          <div className="max-h-48 overflow-y-auto border border-gray-100 rounded p-2 bg-white text-sm text-gray-900 whitespace-pre-wrap break-words">
+            {formatValue(submission.products)}
+          </div>
+        </div>
         
         {/* Group 4: Inne informacje */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-4 mt-4">

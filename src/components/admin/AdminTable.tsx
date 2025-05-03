@@ -63,6 +63,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
                 <TableHead className="w-36 min-w-[140px]">Email / Telefon</TableHead>
                 <TableHead className="w-36 min-w-[140px]">Kategoria</TableHead>
                 <TableHead className="w-36 min-w-[140px]">Lokalizacja</TableHead>
+                <TableHead className="w-36 min-w-[140px]">Asortyment</TableHead>
                 <TableHead className="w-16 text-center">Szczegóły</TableHead>
               </TableRow>
             </TableHeader>
@@ -94,19 +95,18 @@ const AdminTable: React.FC<AdminTableProps> = ({
                     <TableCell className="max-w-36" title={submission.location1}>
                       <div className="line-clamp-2 break-words">{submission.location1}</div>
                     </TableCell>
+                    <TableCell className="max-w-36" title={submission.products}>
+                      <div className="line-clamp-2 break-words">{submission.products}</div>
+                    </TableCell>
                     <TableCell className="text-center">
                       <Accordion type="single" collapsible>
                         <AccordionItem value={`item-${index}`} className="border-none">
                           <AccordionTrigger className="py-0 hover:no-underline">
                             <span className="text-sm text-baltic-blue hover:text-baltic-orange">Rozwiń</span>
                           </AccordionTrigger>
-                          <AccordionContent>
-                            <div className="mt-2">
-                              <TableRow className="border-0 hover:bg-transparent">
-                                <TableCell colSpan={8} className="p-0">
-                                  <DetailedView submission={submission} />
-                                </TableCell>
-                              </TableRow>
+                          <AccordionContent className="absolute left-0 right-0 w-full z-10">
+                            <div className="container mx-auto px-4 mt-2">
+                              <DetailedView submission={submission} />
                             </div>
                           </AccordionContent>
                         </AccordionItem>
