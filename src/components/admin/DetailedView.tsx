@@ -31,80 +31,128 @@ const DetailedView: React.FC<DetailedViewProps> = ({ submission }) => {
     );
   };
   
-  const InfoSection = ({ title, fields, excludeFields = [] }: { 
-    title: string, 
-    fields: string[],
-    excludeFields?: string[]
-  }) => {
-    const filteredFields = fields.filter(key => !excludeFields.includes(key));
-    
-    return (
-      <>
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-4 mt-4">
-          <h3 className="font-bold text-baltic-blue border-b pb-1 mb-2">{title}</h3>
-        </div>
-        
-        {filteredFields.map((key) => {
-          const value = submission[key as keyof FormData];
-          const formattedValue = formatValue(value);
-          const label = formFieldLabels[key as keyof typeof formFieldLabels];
-          
-          if (formattedValue === '') return null;
-          
-          const isLongText = typeof formattedValue === 'string' && formattedValue.length > 50;
-          
-          return (
-            <div key={key} className={`${isLongText ? 'col-span-1 md:col-span-2 lg:col-span-3' : ''}`}>
-              <FieldItem 
-                label={label} 
-                value={formattedValue} 
-                isLongText={isLongText} 
-              />
-            </div>
-          );
-        })}
-      </>
-    );
-  };
-  
   return (
-    <div className="w-full px-6 py-4 bg-gray-50 rounded-md border border-gray-200 shadow-sm mb-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
-        {/* Company Information */}
-        <InfoSection 
-          title="Informacje podstawowe"
-          fields={['firstName', 'lastName', 'companyName', 'nip', 'email', 'phone']}
-        />
+    <div className="py-6">
+      <h2 className="text-2xl font-bold mb-6 text-baltic-blue">Szczegóły zgłoszenia</h2>
+      <div className="space-y-8">
+        {/* Company Information Card */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg text-baltic-blue">
+              Informacje o firmie
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FieldItem label={formFieldLabels.companyName} value={formatValue(submission.companyName)} />
+              <FieldItem label={formFieldLabels.nip} value={formatValue(submission.nip)} />
+              <FieldItem label={formFieldLabels.firstName} value={formatValue(submission.firstName)} />
+              <FieldItem label={formFieldLabels.lastName} value={formatValue(submission.lastName)} />
+            </div>
+          </CardContent>
+        </Card>
         
-        {/* Address Information */}
-        <InfoSection 
-          title="Adres"
-          fields={['street', 'city', 'postalCode']}
-        />
+        {/* Contact Information Card */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg text-baltic-blue">
+              Dane kontaktowe
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FieldItem label={formFieldLabels.email} value={formatValue(submission.email)} />
+              <FieldItem label={formFieldLabels.phone} value={formatValue(submission.phone)} />
+            </div>
+          </CardContent>
+        </Card>
         
-        {/* Booth Information */}
-        <InfoSection 
-          title="Informacje o stoisku"
-          fields={['category', 'location1', 'location2', 'location3', 'tent']}
-        />
+        {/* Address Information Card */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg text-baltic-blue">
+              Adres
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FieldItem label={formFieldLabels.street} value={formatValue(submission.street)} />
+              <FieldItem label={formFieldLabels.city} value={formatValue(submission.city)} />
+              <FieldItem label={formFieldLabels.postalCode} value={formatValue(submission.postalCode)} />
+            </div>
+          </CardContent>
+        </Card>
         
-        {/* Products section - detailed view of products */}
-        <div className="col-span-1 md:col-span-2 lg:col-span-3">
-          <FieldItem 
-            label={formFieldLabels.products}
-            value={formatValue(submission.products)}
-            isLongText={true}
-          />
-        </div>
+        {/* Booth Information Card */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg text-baltic-blue">
+              Informacje o stoisku
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FieldItem label={formFieldLabels.category} value={formatValue(submission.category)} />
+              <FieldItem label={formFieldLabels.tent} value={formatValue(submission.tent)} />
+              <FieldItem label={formFieldLabels.location1} value={formatValue(submission.location1)} />
+              <FieldItem label={formFieldLabels.location2} value={formatValue(submission.location2)} />
+              <FieldItem label={formFieldLabels.location3} value={formatValue(submission.location3)} />
+            </div>
+          </CardContent>
+        </Card>
         
-        {/* Other Information */}
-        <InfoSection 
-          title="Inne informacje"
-          fields={Object.keys(formFieldLabels)}
-          excludeFields={['firstName', 'lastName', 'companyName', 'nip', 'email', 'phone', 
-                        'street', 'city', 'postalCode', 'category', 'products', 
-                        'location1', 'location2', 'location3', 'tent']}
-        />
+        {/* Products Information Card - Full width for long text */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg text-baltic-blue">
+              Asortyment
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FieldItem 
+              label={formFieldLabels.products} 
+              value={formatValue(submission.products)} 
+              isLongText={true} 
+            />
+          </CardContent>
+        </Card>
+        
+        {/* Other Information Card */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg text-baltic-blue">
+              Dodatkowe informacje
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 gap-4">
+              {Object.keys(formFieldLabels)
+                .filter(key => ![
+                  'firstName', 'lastName', 'companyName', 'nip', 'email', 'phone',
+                  'street', 'city', 'postalCode', 'category', 'products',
+                  'location1', 'location2', 'location3', 'tent'
+                ].includes(key))
+                .map(key => {
+                  const value = submission[key as keyof FormData];
+                  const formattedValue = formatValue(value);
+                  
+                  if (!formattedValue) return null;
+                  
+                  const label = formFieldLabels[key as keyof typeof formFieldLabels];
+                  const isLongText = typeof formattedValue === 'string' && formattedValue.length > 50;
+                  
+                  return (
+                    <FieldItem 
+                      key={key} 
+                      label={label} 
+                      value={formattedValue} 
+                      isLongText={isLongText} 
+                    />
+                  );
+                })}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -9,15 +9,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, Eye } from 'lucide-react';
 import { FormData } from '@/utils/formUtils';
 import DetailedView from './DetailedView';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface AdminTableProps {
   displayedSubmissions: FormData[];
@@ -36,6 +35,8 @@ const AdminTable: React.FC<AdminTableProps> = ({
   sortDirection,
   toggleSortDirection
 }) => {
+  const [openSubmissionId, setOpenSubmissionId] = useState<string | null>(null);
+  
   return (
     <div className="rounded-md border">
       {filteredSubmissions.length === 0 ? (
@@ -68,9 +69,12 @@ const AdminTable: React.FC<AdminTableProps> = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {displayedSubmissions.map((submission, index) => (
-                <React.Fragment key={index}>
-                  <TableRow>
+              {displayedSubmissions.map((submission, index) => {
+                // Generate a unique ID for each submission using index
+                const submissionId = `submission-${index}`;
+                
+                return (
+                  <TableRow key={index}>
                     <TableCell className="font-medium">{(currentPage - 1) * entriesPerPage + index + 1}</TableCell>
                     <TableCell className="text-xs whitespace-nowrap">
                       {submission.submissionDateTime || 'Brak daty'}
@@ -99,26 +103,23 @@ const AdminTable: React.FC<AdminTableProps> = ({
                       <div className="line-clamp-2 break-words">{submission.products}</div>
                     </TableCell>
                     <TableCell className="text-center">
-                      <Accordion type="single" collapsible>
-                        <AccordionItem value={`item-${index}`} className="border-none">
-                          <AccordionTrigger className="py-0 hover:no-underline">
-                            <span className="text-sm text-baltic-blue hover:text-baltic-orange">Rozwiń</span>
-                          </AccordionTrigger>
-                          <AccordionContent>
-                            <tr className="border-0">
-                              <td colSpan={9} className="p-0">
-                                <div className="w-full mt-2">
-                                  <DetailedView submission={submission} />
-                                </div>
-                              </td>
-                            </tr>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
+                      <Sheet>
+                        <SheetTrigger asChild>
+                          <button 
+                            className="text-baltic-blue hover:text-baltic-orange transition-colors"
+                            aria-label="Pokaż szczegóły zgłoszenia"
+                          >
+                            <Eye size={18} />
+                          </button>
+                        </SheetTrigger>
+                        <SheetContent className="w-[90%] sm:w-[600px] lg:w-[800px] overflow-y-auto">
+                          <DetailedView submission={submission} />
+                        </SheetContent>
+                      </Sheet>
                     </TableCell>
                   </TableRow>
-                </React.Fragment>
-              ))}
+                );
+              })}
             </TableBody>
           </Table>
         </div>
