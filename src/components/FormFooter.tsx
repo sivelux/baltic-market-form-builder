@@ -1,5 +1,7 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { LogIn } from 'lucide-react';
 
 const FormFooter: React.FC = () => {
   return (
@@ -21,7 +23,12 @@ const FormFooter: React.FC = () => {
             <p>Montaż stoisk: 31.07.2025 r., do godz. 11:00</p>
             <p>Demontaż stoisk: 03.08.2025 r., od godz. 16:00</p>
           </div>
-          <p className="text-sm mt-2 md:mt-0">&copy; Jarmark Bałtycki 2025</p>
+          <div className="flex items-center gap-2 mt-2 md:mt-0">
+            <p className="text-sm">&copy; Jarmark Bałtycki 2025</p>
+            <Link to="/admin" className="text-white hover:text-baltic-orange transition-colors p-1">
+              <LogIn size={16} />
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

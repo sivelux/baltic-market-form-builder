@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,7 +21,26 @@ const MarketForm: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Special handling for postal code to auto-format
+    if (name === 'postalCode') {
+      // Remove all non-digits first
+      const digitsOnly = value.replace(/\D/g, '');
+      
+      // Apply formatting
+      let formattedValue = '';
+      if (digitsOnly.length <= 2) {
+        formattedValue = digitsOnly;
+      } else {
+        // Insert dash after the second digit
+        formattedValue = `${digitsOnly.slice(0, 2)}-${digitsOnly.slice(2, 5)}`;
+      }
+      
+      // Update form data with formatted value
+      setFormData(prev => ({ ...prev, [name]: formattedValue }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
     
     // Validate field on change if it has been touched
     if (touchedFields[name]) {
@@ -277,6 +297,7 @@ const MarketForm: React.FC = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder="XX-XXX"
+                maxLength={6} // 5 digits plus dash
                 className={errors.postalCode ? "border-red-500" : ""} 
                 required 
               />
