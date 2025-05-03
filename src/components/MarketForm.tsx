@@ -9,12 +9,15 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { toast } from "@/components/ui/sonner";
 import { FormData, FormErrors, initialFormData, validateEmail, validateNIP, validatePhone, submitForm } from '@/utils/formUtils';
+import FormConfirmation from './FormConfirmation';
 
 const MarketForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [showBoothDimensions, setShowBoothDimensions] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedData, setSubmittedData] = useState<FormData | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -143,15 +146,29 @@ const MarketForm: React.FC = () => {
     
     if (validateForm()) {
       submitForm(formData);
-      toast.success("Formularz został pomyślnie wypełniony. Dziękujemy za zgłoszenie!");
-      setFormData(initialFormData);
-      setShowBoothDimensions(false);
-      setErrors({});
-      setTouchedFields({});
+      // Save the submitted data and show the confirmation screen
+      setSubmittedData({...formData});
+      setIsSubmitted(true);
+      toast.success("Formularz został pomyślnie wypełniony!");
     } else {
       toast.error("Proszę wypełnić wszystkie wymagane pola formularza.");
     }
   };
+
+  const handleReturnToForm = () => {
+    // Reset the form
+    setFormData(initialFormData);
+    setShowBoothDimensions(false);
+    setErrors({});
+    setTouchedFields({});
+    setIsSubmitted(false);
+    setSubmittedData(null);
+  };
+
+  // If the form has been submitted successfully, show the confirmation screen
+  if (isSubmitted && submittedData) {
+    return <FormConfirmation formData={submittedData} onReturn={handleReturnToForm} />;
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 w-full max-w-4xl mx-auto">
