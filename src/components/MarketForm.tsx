@@ -591,19 +591,20 @@ const MarketForm: React.FC<MarketFormProps> = ({ mapPdfUrl = "#" }) => {
       {/* Wybór lokalizacji */}
       <div className="p-6 bg-white rounded-lg shadow">
         <h2 className="text-xl font-semibold mb-4 text-baltic-blue">Wybór lokalizacji</h2>
-        <p className="text-sm italic mb-3">(prosimy o wskazanie kilku preferencji – w razie niedostępności pierwszego wyboru)</p>
         
-        {/* Map download link - new addition */}
+        {/* Map download link - moved above the instruction text */}
         <a 
           href={mapPdfUrl} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="flex items-center gap-2 font-bold text-lg text-baltic-blue hover:text-baltic-orange underline mb-6 transition-colors"
+          className="flex items-center gap-2 font-bold text-lg text-baltic-blue hover:text-baltic-orange underline mb-4 transition-colors"
           download="mapa-jarmark-baltycki.pdf"
         >
           <Download size={20} />
           <span>📍 Pobierz mapę wydarzenia (PDF)</span>
         </a>
+        
+        <p className="text-sm italic mb-6">(prosimy o wskazanie kilku preferencji – w razie niedostępności pierwszego wyboru)</p>
         
         <div className="space-y-4">
           <div className="space-y-2">
