@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from "@/components/ui/sonner";
@@ -120,8 +119,6 @@ const MarketForm: React.FC<MarketFormProps> = ({ mapPdfUrl = "#" }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 w-full max-w-4xl mx-auto">
-      <EventScheduleSection />
-      
       {/* Dane wystawcy */}
       <FormSection title="Dane wystawcy">
         <ExhibitorInfoSection 
@@ -176,6 +173,11 @@ const MarketForm: React.FC<MarketFormProps> = ({ mapPdfUrl = "#" }) => {
         >
           Wyślij zgłoszenie
         </Button>
+      </div>
+      
+      {/* Event Schedule moved below submit button */}
+      <div className="mt-8">
+        <EventScheduleSection />
       </div>
     </form>
   );
