@@ -32,9 +32,10 @@ import {
   PaginationPrevious,
   PaginationEllipsis,
 } from '@/components/ui/pagination';
-import { Search, Download, FileDown, ArrowUpDown } from 'lucide-react';
+import { Search, Download, FileDown, ArrowUpDown, DoorOpen } from 'lucide-react';
 import { FormData, getSubmissions, generateCSV, generateExcel, downloadCSV, downloadExcel, generateEnhancedExcel, formFieldLabels } from '@/utils/formUtils';
 import { toast } from '@/components/ui/sonner';
+import { useAuth } from '@/context/AuthContext';
 
 const AdminDashboard = () => {
   const [submissions, setSubmissions] = useState<FormData[]>([]);
@@ -45,6 +46,7 @@ const AdminDashboard = () => {
   const [entriesPerPage, setEntriesPerPage] = useState(25);
   const [totalPages, setTotalPages] = useState(1);
   const [displayedSubmissions, setDisplayedSubmissions] = useState<FormData[]>([]);
+  const { logout } = useAuth();
   
   // Fetch the submissions when component mounts
   useEffect(() => {
@@ -239,7 +241,17 @@ const AdminDashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6 text-baltic-blue">Panel Administratora - Zgłoszenia</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-baltic-blue">Panel Administratora - Zgłoszenia</h1>
+        <Button 
+          onClick={logout}
+          variant="outline" 
+          className="bg-white hover:bg-gray-100 text-baltic-blue border-baltic-blue hover:text-baltic-orange flex items-center gap-2"
+        >
+          <DoorOpen className="h-4 w-4" />
+          Wyloguj się
+        </Button>
+      </div>
 
       <div className="mb-6 flex flex-col sm:flex-row gap-4">
         <div className="relative flex-grow">
