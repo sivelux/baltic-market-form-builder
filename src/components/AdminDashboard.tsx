@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -119,7 +120,7 @@ const AdminDashboard = () => {
     return value.toString();
   };
 
-  // Handle downloading data as CSV
+  // Handle downloading data as CSV with improved encoding
   const handleDownloadCSV = () => {
     try {
       const csv = generateCSV(submissions);
@@ -131,14 +132,14 @@ const AdminDashboard = () => {
     }
   };
 
-  // Handle downloading data as Excel
+  // Handle downloading data as Excel with improved formatting
   const handleDownloadExcel = () => {
     try {
-      // Use enhanced Excel with two worksheets
+      // Use enhanced Excel with proper UTF-8 encoding and formatting
       const excelData = generateEnhancedExcel(submissions);
       downloadExcel(
         excelData, 
-        `jarmark_baltycki_zgloszenia_${new Date().toLocaleDateString('pl-PL')}.xls`,
+        `jarmark_baltycki_zgloszenia_${new Date().toLocaleDateString('pl-PL')}.xlsx`,
         true
       );
       toast.success('Plik Excel został wygenerowany pomyślnie.');
@@ -303,12 +304,12 @@ const AdminDashboard = () => {
                       <ArrowUpDown className="ml-2 h-4 w-4" />
                     </div>
                   </TableHead>
-                  <TableHead>Firma</TableHead>
-                  <TableHead>Osoba kontaktowa</TableHead>
-                  <TableHead>Email / Telefon</TableHead>
-                  <TableHead>Kategoria</TableHead>
-                  <TableHead>Lokalizacja</TableHead>
-                  <TableHead className="w-16">Szczegóły</TableHead>
+                  <TableHead className="w-36 min-w-[140px]">Firma</TableHead>
+                  <TableHead className="w-40 min-w-[160px]">Osoba kontaktowa</TableHead>
+                  <TableHead className="w-36 min-w-[140px]">Email / Telefon</TableHead>
+                  <TableHead className="w-36 min-w-[140px]">Kategoria</TableHead>
+                  <TableHead className="w-36 min-w-[140px]">Lokalizacja</TableHead>
+                  <TableHead className="w-16 text-center">Szczegóły</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -316,30 +317,30 @@ const AdminDashboard = () => {
                   <React.Fragment key={index}>
                     <TableRow>
                       <TableCell className="font-medium">{(currentPage - 1) * entriesPerPage + index + 1}</TableCell>
-                      <TableCell className="text-xs">
+                      <TableCell className="text-xs whitespace-nowrap">
                         {submission.submissionDateTime || 'Brak daty'}
                       </TableCell>
                       <TableCell className="font-semibold">
-                        {submission.companyName}
+                        <div className="break-words">{submission.companyName}</div>
                         <div className="text-xs text-gray-500">{submission.nip}</div>
                       </TableCell>
                       <TableCell>
-                        {submission.contactPerson}
-                        <div className="text-xs">
+                        <div className="break-words">{submission.contactPerson}</div>
+                        <div className="text-xs break-words">
                           {submission.street}, {submission.postalCode} {submission.city}
                         </div>
                       </TableCell>
                       <TableCell>
-                        {submission.email}
+                        <div className="break-words">{submission.email}</div>
                         <div className="text-xs">{submission.phone}</div>
                       </TableCell>
-                      <TableCell className="max-w-48 truncate" title={submission.category}>
-                        {submission.category}
+                      <TableCell className="max-w-36" title={submission.category}>
+                        <div className="line-clamp-2 break-words">{submission.category}</div>
                       </TableCell>
-                      <TableCell className="max-w-48 truncate" title={submission.location1}>
-                        {submission.location1}
+                      <TableCell className="max-w-36" title={submission.location1}>
+                        <div className="line-clamp-2 break-words">{submission.location1}</div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-center">
                         <Accordion type="single" collapsible>
                           <AccordionItem value={`item-${index}`} className="border-none">
                             <AccordionTrigger className="py-0 hover:no-underline">
@@ -355,18 +356,18 @@ const AdminDashboard = () => {
                                   // Skip if no value
                                   if (formattedValue === '') return null;
                                   
-                                  // Make long text fields scrollable
-                                  const isLongText = typeof formattedValue === 'string' && formattedValue.length > 100;
+                                  // Make all text fields potentially scrollable
+                                  const isLongText = typeof formattedValue === 'string' && formattedValue.length > 50;
                                   
                                   return (
-                                    <div key={key} className="mb-1">
-                                      <div className="font-semibold text-baltic-blue">{label}:</div>
+                                    <div key={key} className="mb-2">
+                                      <div className="font-semibold text-baltic-blue mb-1">{label}:</div>
                                       {isLongText ? (
-                                        <div className="max-h-24 overflow-y-auto border border-gray-200 rounded p-2 bg-gray-50">
+                                        <div className="max-h-32 overflow-y-auto border border-gray-200 rounded p-2 bg-gray-50 whitespace-pre-wrap break-words">
                                           {formattedValue}
                                         </div>
                                       ) : (
-                                        <div>{formattedValue}</div>
+                                        <div className="break-words">{formattedValue}</div>
                                       )}
                                     </div>
                                   );
@@ -385,8 +386,8 @@ const AdminDashboard = () => {
         )}
       </div>
 
-      {/* Pagination controls and entry display selector */}
-      <div className="mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+      {/* Pagination controls and entry display selector - improved responsiveness */}
+      <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex items-center gap-2">
           <span className="text-sm text-gray-500">Pokaż</span>
           <Select

@@ -163,7 +163,7 @@ export const getOrderedFieldNames = (): string[] => {
   return ['submissionDateTime', ...Object.keys(initialFormData)];
 };
 
-// Convert form data to CSV with proper UTF-8 handling
+// Convert form data to CSV with improved UTF-8 handling
 export const generateCSV = (submissions: FormData[]): string => {
   if (submissions.length === 0) return "";
   
@@ -171,7 +171,7 @@ export const generateCSV = (submissions: FormData[]): string => {
   const orderedFields = getOrderedFieldNames();
   
   // Use the field labels map to create headers in Polish
-  const headers = orderedFields.map(key => formFieldLabels[key] || key).join(",");
+  const headers = orderedFields.map(key => formFieldLabels[key] || key).join(";"); // Using semicolon for Excel compatibility
   
   // Format each submission row
   const rows = submissions.map(submission => {
@@ -185,11 +185,12 @@ export const generateCSV = (submissions: FormData[]): string => {
       
       // Handle string values with proper escaping
       if (typeof value === "string") {
+        // Double all double quotes and wrap in quotes
         return `"${value.replace(/"/g, '""')}"`;
       }
       
       return value === undefined ? '""' : `"${value}"`;
-    }).join(",");
+    }).join(";"); // Using semicolon delimiter for Excel compatibility
   });
   
   return [headers, ...rows].join("\n");
@@ -207,7 +208,7 @@ export const generateExcel = (submissions: FormData[]): Blob => {
   });
 };
 
-// Generate Excel with two worksheets (main data + field descriptions)
+// Generate Excel with two worksheets and improved formatting
 export const generateEnhancedExcel = (submissions: FormData[]): string => {
   if (submissions.length === 0) return "";
   
@@ -234,6 +235,12 @@ export const generateEnhancedExcel = (submissions: FormData[]): string => {
         return formatBooleanValue(value);
       }
       
+      // Handle string values properly
+      if (typeof value === "string") {
+        // Replace tabs with spaces to prevent column misalignment
+        return value.replace(/\t/g, ' ');
+      }
+      
       return value === undefined ? '' : String(value);
     });
     
@@ -252,9 +259,11 @@ export const generateEnhancedExcel = (submissions: FormData[]): string => {
   return BOM + excelContent;
 };
 
-// Download helper for CSV
+// Download helper for CSV with improved encoding
 export const downloadCSV = (data: string, filename: string): void => {
-  const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+  // Add BOM (Byte Order Mark) for UTF-8
+  const BOM = "\uFEFF";
+  const blob = new Blob([BOM + data], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
   
   const url = URL.createObjectURL(blob);
@@ -274,7 +283,7 @@ export const downloadExcel = (data: Blob | string, filename: string, isEnhanced:
   if (typeof data === 'string') {
     // For enhanced Excel format (string with multiple worksheets)
     blob = new Blob([data], { 
-      type: 'application/vnd.ms-excel;charset=utf-8' 
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' 
     });
   } else {
     // Use the blob directly
