@@ -5,6 +5,8 @@ import { FormData } from '@/utils/formUtils';
 import { Printer } from 'lucide-react';
 import { ArrowLeft } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { CheckCircle } from 'lucide-react';
 
 interface FormConfirmationProps {
   formData: FormData;
@@ -24,6 +26,14 @@ const FormConfirmation: React.FC<FormConfirmationProps> = ({ formData, onReturn 
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6 bg-white rounded-lg shadow print:shadow-none">
+      {/* Top confirmation message */}
+      <Alert className="mb-6 bg-baltic-blue/10 border-baltic-blue text-baltic-blue font-medium">
+        <CheckCircle className="h-5 w-5 mr-2" />
+        <AlertDescription className="text-baltic-blue font-semibold">
+          Formularz został pomyślnie wysłany. Dziękujemy za zgłoszenie!
+        </AlertDescription>
+      </Alert>
+      
       <h2 className="text-2xl font-bold text-baltic-blue mb-6 text-center">
         Formularz został pomyślnie wypełniony. Oto podsumowanie zgłoszenia:
       </h2>
@@ -162,6 +172,14 @@ const FormConfirmation: React.FC<FormConfirmationProps> = ({ formData, onReturn 
             </div>
           </div>
         </div>
+        
+        {/* Bottom confirmation message */}
+        <Alert className="mt-6 bg-baltic-blue/10 border-baltic-blue text-baltic-blue font-medium print:hidden">
+          <CheckCircle className="h-5 w-5 mr-2" />
+          <AlertDescription className="text-baltic-blue font-semibold">
+            Formularz został pomyślnie wysłany. Dziękujemy za zgłoszenie!
+          </AlertDescription>
+        </Alert>
       </div>
       
       <div className="mt-8 flex flex-col sm:flex-row justify-between gap-4 print:hidden">
@@ -181,26 +199,7 @@ const FormConfirmation: React.FC<FormConfirmationProps> = ({ formData, onReturn 
         </Button>
       </div>
       
-      {/* Print-specific styles */}
-      <style jsx global>{`
-        @media print {
-          body {
-            background-color: white;
-            color: black;
-            font-size: 12pt;
-          }
-          
-          .container {
-            width: 100%;
-            max-width: 100%;
-            padding: 0;
-          }
-          
-          header, footer, button {
-            display: none;
-          }
-        }
-      `}</style>
+      {/* Add print-specific styles to the index.css file instead of here */}
     </div>
   );
 };
