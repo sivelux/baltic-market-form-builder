@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { FormData, getSubmissions, generateCSV, downloadCSV } from '@/utils/formUtils';
+import { FormData, getSubmissions, generateCSV, downloadCSV, generateExcel, downloadExcel } from '@/utils/formUtils';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { FileSpreadsheet, FileExcel } from 'lucide-react';
 
 const AdminDashboard: React.FC = () => {
   const { isAuthenticated, logout } = useAuth();
@@ -29,6 +31,12 @@ const AdminDashboard: React.FC = () => {
     const filename = `jarmark-baltycki-zgloszenia-${new Date().toISOString().split('T')[0]}.csv`;
     downloadCSV(csv, filename);
   };
+  
+  const handleExportExcel = () => {
+    const excel = generateExcel(submissions);
+    const filename = `jarmark-baltycki-zgloszenia-${new Date().toISOString().split('T')[0]}.xls`;
+    downloadExcel(excel, filename);
+  };
 
   return (
     <div className="min-h-screen bg-baltic-beige">
@@ -38,7 +46,12 @@ const AdminDashboard: React.FC = () => {
             <h1 className="text-2xl font-bold text-baltic-blue">Panel administracyjny - Jarmark Bałtycki 2025</h1>
             <div className="flex space-x-4">
               <Button variant="outline" onClick={handleExportCSV}>
+                <FileSpreadsheet className="mr-2" />
                 Eksportuj do CSV
+              </Button>
+              <Button variant="outline" onClick={handleExportExcel}>
+                <FileExcel className="mr-2" />
+                Eksportuj do Excel
               </Button>
               <Button variant="destructive" onClick={logout}>
                 Wyloguj
@@ -56,40 +69,40 @@ const AdminDashboard: React.FC = () => {
           </div>
           
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-baltic-blue text-white">
-                  <th className="p-2 border text-left">Firma</th>
-                  <th className="p-2 border text-left">Osoba kontaktowa</th>
-                  <th className="p-2 border text-left">Email</th>
-                  <th className="p-2 border text-left">Telefon</th>
-                  <th className="p-2 border text-left">Kategoria</th>
-                  <th className="p-2 border text-left">Rodzaj stoiska</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Firma</TableHead>
+                  <TableHead>Osoba kontaktowa</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Telefon</TableHead>
+                  <TableHead>Kategoria</TableHead>
+                  <TableHead>Rodzaj stoiska</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {filteredSubmissions.length > 0 ? (
                   filteredSubmissions.map((submission, index) => (
-                    <tr key={index} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                      <td className="p-2 border">{submission.companyName}</td>
-                      <td className="p-2 border">{submission.contactPerson}</td>
-                      <td className="p-2 border">{submission.email}</td>
-                      <td className="p-2 border">{submission.phone}</td>
-                      <td className="p-2 border">{submission.category}</td>
-                      <td className="p-2 border">{submission.boothType}</td>
-                    </tr>
+                    <TableRow key={index}>
+                      <TableCell>{submission.companyName}</TableCell>
+                      <TableCell>{submission.contactPerson}</TableCell>
+                      <TableCell>{submission.email}</TableCell>
+                      <TableCell>{submission.phone}</TableCell>
+                      <TableCell>{submission.category}</TableCell>
+                      <TableCell>{submission.boothType}</TableCell>
+                    </TableRow>
                   ))
                 ) : (
-                  <tr>
-                    <td colSpan={6} className="p-4 text-center">
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-4">
                       {submissions.length === 0
                         ? "Brak zgłoszeń w systemie. Kiedy formularz zostanie wypełniony, zgłoszenia pojawią się tutaj."
                         : "Brak wyników wyszukiwania."}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 )}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
       </div>

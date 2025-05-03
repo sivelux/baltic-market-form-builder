@@ -86,12 +86,33 @@ export const generateCSV = (submissions: FormData[]): string => {
   return [headers, ...rows].join("\n");
 };
 
+// Generate Excel file
+export const generateExcel = (submissions: FormData[]): Blob => {
+  // This is a simplified approach that creates an Excel-compatible CSV file
+  const csvContent = generateCSV(submissions);
+  return new Blob([csvContent], { type: 'application/vnd.ms-excel' });
+};
+
 // Download helper
 export const downloadCSV = (data: string, filename: string): void => {
   const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
   
   const url = URL.createObjectURL(blob);
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  link.style.visibility = 'hidden';
+  
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+// Download Excel helper
+export const downloadExcel = (data: Blob, filename: string): void => {
+  const link = document.createElement('a');
+  
+  const url = URL.createObjectURL(data);
   link.setAttribute('href', url);
   link.setAttribute('download', filename);
   link.style.visibility = 'hidden';
