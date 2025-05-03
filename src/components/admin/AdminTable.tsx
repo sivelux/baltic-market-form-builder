@@ -1,9 +1,20 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { FormData } from '@/utils/formUtils';
-import { Info } from 'lucide-react';
-import { Card, CardContent } from "@/components/ui/card";
-import './SubmissionCard.css';
+import { Eye } from 'lucide-react';
+import { 
+  Table, 
+  TableHeader, 
+  TableBody, 
+  TableHead, 
+  TableRow, 
+  TableCell 
+} from "@/components/ui/table";
+import { 
+  Card, 
+  CardContent 
+} from "@/components/ui/card";
+import DetailedView from './DetailedView';
 
 interface AdminTableProps {
   displayedSubmissions: FormData[];
@@ -22,10 +33,10 @@ const AdminTable: React.FC<AdminTableProps> = ({
   sortDirection,
   toggleSortDirection
 }) => {
-  const [flippedCards, setFlippedCards] = useState<Record<string, boolean>>({});
+  const [expandedRows, setExpandedRows] = React.useState<Record<string, boolean>>({});
 
-  const toggleCardFlip = (id: string) => {
-    setFlippedCards(prev => ({
+  const toggleExpandRow = (id: string) => {
+    setExpandedRows(prev => ({
       ...prev,
       [id]: !prev[id]
     }));
@@ -38,125 +49,85 @@ const AdminTable: React.FC<AdminTableProps> = ({
           Brak wyników dla podanego wyszukiwania.
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-          {displayedSubmissions.map((submission, index) => {
-            const submissionId = `submission-${index}`;
-            const isFlipped = flippedCards[submissionId] || false;
-            
-            return (
-              <div 
-                key={submissionId} 
-                className={`submission-card-container ${isFlipped ? 'flipped' : ''}`}
-              >
-                {/* Front of Card */}
-                <Card className={`submission-card submission-card-front shadow-md h-full`}>
-                  <CardContent className="p-6">
-                    <div className="flex justify-between items-start mb-3">
-                      <div className="font-semibold text-lg text-baltic-blue">
-                        {submission.companyName}
-                      </div>
-                      <button
-                        onClick={() => toggleCardFlip(submissionId)}
-                        className="bg-baltic-blue text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-baltic-orange transition-colors"
-                        aria-label="Więcej informacji"
-                      >
-                        <Info size={14} />
-                      </button>
-                    </div>
-
-                    <div className="text-xs text-gray-500 mb-3">
-                      {submission.submissionDateTime || 'Brak daty'}
-                    </div>
-
-                    <div className="space-y-3">
-                      <div>
-                        <div className="text-xs font-semibold text-gray-500">Osoba kontaktowa</div>
-                        <div className="text-sm">{submission.firstName} {submission.lastName}</div>
-                      </div>
-                      
-                      <div>
-                        <div className="text-xs font-semibold text-gray-500">Kontakt</div>
-                        <div className="text-sm">{submission.email}</div>
-                        <div className="text-sm">{submission.phone}</div>
-                      </div>
-                      
-                      <div>
-                        <div className="text-xs font-semibold text-gray-500">Kategoria</div>
-                        <div className="text-sm line-clamp-1">{submission.category}</div>
-                      </div>
-
-                      <div>
-                        <div className="text-xs font-semibold text-gray-500">Lokalizacja</div>
-                        <div className="text-sm line-clamp-1">{submission.location1}</div>
-                      </div>
-                      
-                      <div>
-                        <div className="text-xs font-semibold text-gray-500">Asortyment</div>
-                        <div className="text-sm line-clamp-2">{submission.products}</div>
-                      </div>
-                    </div>
-
-                    <div className="mt-3 text-center text-xs text-gray-500">
-                      Kliknij ikonę informacji, aby zobaczyć więcej szczegółów
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Back of Card */}
-                <Card className={`submission-card submission-card-back shadow-md h-full`}>
-                  <CardContent className="p-6 overflow-auto">
-                    <div className="flex justify-between items-start mb-3">
-                      <div className="font-semibold text-lg text-baltic-blue">
-                        Szczegóły zgłoszenia
-                      </div>
-                      <button
-                        onClick={() => toggleCardFlip(submissionId)}
-                        className="bg-baltic-orange text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-baltic-blue transition-colors"
-                        aria-label="Powrót"
-                      >
-                        <Info size={14} />
-                      </button>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div>
-                        <div className="text-xs font-semibold text-gray-500">NIP</div>
-                        <div className="text-sm">{submission.nip}</div>
-                      </div>
-                      
-                      <div>
-                        <div className="text-xs font-semibold text-gray-500">Adres</div>
-                        <div className="text-sm">{submission.street}</div>
-                        <div className="text-sm">{submission.postalCode} {submission.city}</div>
-                      </div>
-
-                      <div>
-                        <div className="text-xs font-semibold text-gray-500">Lokalizacje alternatywne</div>
-                        {submission.location2 && <div className="text-sm">{submission.location2}</div>}
-                        {submission.location3 && <div className="text-sm">{submission.location3}</div>}
-                      </div>
-
-                      <div>
-                        <div className="text-xs font-semibold text-gray-500">Pełny asortyment</div>
-                        <div className="text-sm max-h-24 overflow-y-auto border border-gray-100 rounded p-2 bg-white whitespace-pre-wrap break-words">
-                          {submission.products}
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <div className="text-xs font-semibold text-gray-500">Dodatkowe informacje</div>
-                        {submission.comments && (
-                          <div className="text-sm max-h-24 overflow-y-auto border border-gray-100 rounded p-2 bg-white whitespace-pre-wrap break-words">
-                            {submission.comments}
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-14">#</TableHead>
+                <TableHead className="w-40">
+                  <div className="flex items-center gap-1 cursor-pointer" onClick={toggleSortDirection}>
+                    Data 
+                    <span className="text-xs">
+                      {sortDirection === 'desc' ? '▼' : '▲'}
+                    </span>
+                  </div>
+                </TableHead>
+                <TableHead>Firma</TableHead>
+                <TableHead>Osoba kontaktowa</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Kategoria</TableHead>
+                <TableHead>Lokalizacja</TableHead>
+                <TableHead>Asortyment</TableHead>
+                <TableHead className="text-right">Szczegóły</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {displayedSubmissions.map((submission, index) => {
+                const submissionId = `submission-${index}`;
+                const isExpanded = expandedRows[submissionId] || false;
+                const startIndex = (currentPage - 1) * entriesPerPage;
+                
+                return (
+                  <React.Fragment key={submissionId}>
+                    <TableRow className={isExpanded ? 'bg-gray-50' : ''}>
+                      <TableCell>{startIndex + index + 1}</TableCell>
+                      <TableCell>
+                        <div className="text-sm">{submission.submissionDateTime || 'Brak daty'}</div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="font-medium">{submission.companyName}</div>
+                        <div className="text-xs text-gray-500">NIP: {submission.nip}</div>
+                      </TableCell>
+                      <TableCell>
+                        <div>{submission.firstName} {submission.lastName}</div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="truncate max-w-[200px]">{submission.email}</div>
+                        <div className="text-xs text-gray-500">{submission.phone}</div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="truncate max-w-[120px]">{submission.category}</div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="truncate max-w-[120px]">{submission.location1}</div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="truncate max-w-[200px]">{submission.products}</div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <button
+                          onClick={() => toggleExpandRow(submissionId)}
+                          className="bg-baltic-blue text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-baltic-orange transition-colors"
+                          aria-label="Szczegóły"
+                        >
+                          <Eye size={14} />
+                        </button>
+                      </TableCell>
+                    </TableRow>
+                    {isExpanded && (
+                      <TableRow>
+                        <TableCell colSpan={9} className="p-0 border-t-0">
+                          <div className="p-4 bg-gray-50">
+                            <DetailedView submission={submission} />
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            );
-          })}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </TableBody>
+          </Table>
         </div>
       )}
     </div>

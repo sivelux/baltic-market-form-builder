@@ -93,10 +93,9 @@ const DetailedView: React.FC<DetailedViewProps> = ({ submission }) => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FieldItem label={formFieldLabels.category} value={formatValue(submission.category)} />
-              <FieldItem label={formFieldLabels.tent} value={formatValue(submission.tent)} />
-              <FieldItem label={formFieldLabels.location1} value={formatValue(submission.location1)} />
-              <FieldItem label={formFieldLabels.location2} value={formatValue(submission.location2)} />
-              <FieldItem label={formFieldLabels.location3} value={formatValue(submission.location3)} />
+              {submission.location1 && <FieldItem label={formFieldLabels.location1} value={formatValue(submission.location1)} />}
+              {submission.location2 && <FieldItem label={formFieldLabels.location2} value={formatValue(submission.location2)} />}
+              {submission.location3 && <FieldItem label={formFieldLabels.location3} value={formatValue(submission.location3)} />}
             </div>
           </CardContent>
         </Card>
@@ -130,7 +129,7 @@ const DetailedView: React.FC<DetailedViewProps> = ({ submission }) => {
                 .filter(key => ![
                   'firstName', 'lastName', 'companyName', 'nip', 'email', 'phone',
                   'street', 'city', 'postalCode', 'category', 'products',
-                  'location1', 'location2', 'location3', 'tent'
+                  'location1', 'location2', 'location3'
                 ].includes(key))
                 .map(key => {
                   const value = submission[key as keyof FormData];
