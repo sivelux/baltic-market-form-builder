@@ -391,28 +391,28 @@ const MarketForm: React.FC = () => {
               className="space-y-2"
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="I. Artyści rękodzielnicy" id="category-1" />
-                <Label htmlFor="category-1">I. Artyści rękodzielnicy</Label>
+                <RadioGroupItem value="Artyści rękodzielnicy" id="category-1" />
+                <Label htmlFor="category-1">Artyści rękodzielnicy</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="II. Wytwórcy produktów tradycyjnych i regionalnych z woj. zachodniopomorskiego" id="category-2" />
-                <Label htmlFor="category-2">II. Wytwórcy produktów tradycyjnych i regionalnych z woj. zachodniopomorskiego</Label>
+                <RadioGroupItem value="Wytwórcy produktów tradycyjnych i regionalnych z województwa zachodniopomorskiego" id="category-2" />
+                <Label htmlFor="category-2">Wytwórcy produktów tradycyjnych i regionalnych z województwa zachodniopomorskiego</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="III. Pozostali (pośrednicy, handlarze itp.)" id="category-3" />
-                <Label htmlFor="category-3">III. Pozostali (pośrednicy, handlarze itp.)</Label>
+                <RadioGroupItem value="Pozostali (np. pośrednicy, handlarze itp.)" id="category-3" />
+                <Label htmlFor="category-3">Pozostali (np. pośrednicy, handlarze itp.)</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="IV. Producenci artykułów spożywczych" id="category-4" />
-                <Label htmlFor="category-4">IV. Producenci artykułów spożywczych</Label>
+                <RadioGroupItem value="Producenci artykułów spożywczych" id="category-4" />
+                <Label htmlFor="category-4">Producenci artykułów spożywczych</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="V. Winiarze, producenci nalewek" id="category-5" />
-                <Label htmlFor="category-5">V. Winiarze, producenci nalewek</Label>
+                <RadioGroupItem value="Winiarze i producenci nalewek" id="category-5" />
+                <Label htmlFor="category-5">Winiarze i producenci nalewek</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="VI. Gastronomia" id="category-6" />
-                <Label htmlFor="category-6">VI. Gastronomia</Label>
+                <RadioGroupItem value="Gastronomia" id="category-6" />
+                <Label htmlFor="category-6">Gastronomia</Label>
               </div>
             </RadioGroup>
             {errors.category && touchedFields.category && (

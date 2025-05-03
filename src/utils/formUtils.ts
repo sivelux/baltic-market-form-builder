@@ -1,4 +1,3 @@
-
 // Form validation functions
 export const validateEmail = (email: string): boolean => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -168,7 +167,7 @@ export const formFieldDescriptions: Record<string, string> = {
   email: "Adres e-mail do kontaktu",
   phone: "Numer telefonu do szybkiego kontaktu",
   participatedLastYear: "Informacja o uczestnictwie w poprzedniej edycji Jarmarku",
-  category: "Kategoria działalności wystawcy",
+  category: "Kategoria działalności wystawcy: Artyści rękodzielnicy, Wytwórcy produktów tradycyjnych i regionalnych, Pozostali, Producenci artykułów spożywczych, Winiarze i producenci nalewek, Gastronomia",
   boothType: "Rodzaj i wymiary stoiska handlowego",
   boothDimensions: "Dokładne wymiary namiotu lub food trucka (jeśli dotyczy)",
   powerConnection: "Informacja o wymaganym podłączeniu do prądu",
