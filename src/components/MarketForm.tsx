@@ -73,7 +73,17 @@ const MarketForm: React.FC = () => {
       return true;
     }
     
-    // Required field validation
+    // Skip validation for notes field as it's optional
+    if (name === 'notes') {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors.notes;
+        return newErrors;
+      });
+      return true;
+    }
+    
+    // Required field validation for all other fields
     if (value === "" || value === false) {
       errorMessage = "To pole jest wymagane";
     }
@@ -117,7 +127,12 @@ const MarketForm: React.FC = () => {
         return;
       }
       
-      // Required field validation
+      // Skip validation for notes field as it's optional
+      if (key === 'notes') {
+        return;
+      }
+      
+      // Required field validation for all other fields
       if (value === "" || value === false) {
         newErrors[key] = "To pole jest wymagane";
         formIsValid = false;
@@ -487,7 +502,9 @@ const MarketForm: React.FC = () => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="notes" className={errors.notes ? "text-red-500" : ""}>5. Uwagi:</Label>
+            <Label htmlFor="notes" className={errors.notes ? "text-red-500" : ""}>
+              5. Uwagi (opcjonalnie):
+            </Label>
             <Textarea 
               id="notes" 
               name="notes" 
@@ -495,7 +512,6 @@ const MarketForm: React.FC = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               className={errors.notes ? "border-red-500" : ""} 
-              required 
             />
             {errors.notes && touchedFields.notes && (
               <p className="text-red-500 text-sm mt-1">{errors.notes}</p>

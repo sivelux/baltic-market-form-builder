@@ -37,7 +37,7 @@ export interface FormData {
   boothDimensions: string;
   powerConnection: string;
   products: string;
-  notes: string;
+  notes: string; // This is the only optional field
   needsParking: "TAK" | "NIE";
   location1: string;
   location2: string;
@@ -65,7 +65,7 @@ export const initialFormData: FormData = {
   boothDimensions: "",
   powerConnection: "",
   products: "",
-  notes: "",
+  notes: "", // Optional field
   needsParking: "NIE",
   location1: "",
   location2: "",

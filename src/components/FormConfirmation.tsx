@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { FormData } from '@/utils/formUtils';
@@ -132,7 +131,7 @@ const FormConfirmation: React.FC<FormConfirmationProps> = ({ formData, onReturn 
             
             <div className="space-y-1">
               <p className="font-medium text-gray-600">Uwagi:</p>
-              <p className="pl-3">{formData.notes}</p>
+              <p className="pl-3">{formData.notes || "Brak uwag"}</p>
             </div>
             
             <div className="space-y-1">
