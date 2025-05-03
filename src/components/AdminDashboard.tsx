@@ -150,8 +150,18 @@ const AdminDashboard: React.FC = () => {
                                       </div>
 
                                       <div className="space-y-1">
-                                        <p className="font-medium text-gray-600">Adres:</p>
-                                        <p>{submission.address}</p>
+                                        <p className="font-medium text-gray-600">Ulica:</p>
+                                        <p>{submission.street}</p>
+                                      </div>
+
+                                      <div className="space-y-1">
+                                        <p className="font-medium text-gray-600">Kod pocztowy:</p>
+                                        <p>{submission.postalCode}</p>
+                                      </div>
+
+                                      <div className="space-y-1">
+                                        <p className="font-medium text-gray-600">Miejscowość:</p>
+                                        <p>{submission.city}</p>
                                       </div>
 
                                       <div className="space-y-1">

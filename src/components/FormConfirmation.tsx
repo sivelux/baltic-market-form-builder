@@ -54,9 +54,21 @@ const FormConfirmation: React.FC<FormConfirmationProps> = ({ formData, onReturn 
             </div>
           </div>
           
-          <div className="mt-4 space-y-1">
-            <p className="font-medium text-gray-600">Adres:</p>
-            <p className="pl-3">{formData.address}</p>
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <p className="font-medium text-gray-600">Ulica:</p>
+              <p className="pl-3">{formData.street}</p>
+            </div>
+            
+            <div className="space-y-1">
+              <p className="font-medium text-gray-600">Kod pocztowy:</p>
+              <p className="pl-3">{formData.postalCode}</p>
+            </div>
+            
+            <div className="space-y-1">
+              <p className="font-medium text-gray-600">Miejscowość:</p>
+              <p className="pl-3">{formData.city}</p>
+            </div>
           </div>
           
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">

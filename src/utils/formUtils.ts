@@ -15,10 +15,19 @@ export const validatePhone = (phone: string): boolean => {
   return cleanPhone.length >= 9;
 };
 
+export const validatePostalCode = (postalCode: string): boolean => {
+  const cleanPostalCode = postalCode.replace(/[^0-9-]/g, "");
+  // Polish postal code format: XX-XXX
+  const re = /^\d{2}-\d{3}$/;
+  return re.test(cleanPostalCode);
+};
+
 export interface FormData {
   companyName: string;
   contactPerson: string;
-  address: string;
+  street: string;
+  postalCode: string;
+  city: string;
   nip: string;
   email: string;
   phone: string;
@@ -44,7 +53,9 @@ export interface FormErrors {
 export const initialFormData: FormData = {
   companyName: "",
   contactPerson: "",
-  address: "",
+  street: "",
+  postalCode: "",
+  city: "",
   nip: "",
   email: "",
   phone: "",
@@ -125,4 +136,3 @@ export const downloadExcel = (data: Blob, filename: string): void => {
   link.click();
   document.body.removeChild(link);
 };
-

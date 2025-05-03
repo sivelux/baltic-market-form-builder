@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { toast } from "@/components/ui/sonner";
-import { FormData, FormErrors, initialFormData, validateEmail, validateNIP, validatePhone, submitForm } from '@/utils/formUtils';
+import { FormData, FormErrors, initialFormData, validateEmail, validateNIP, validatePhone, validatePostalCode, submitForm } from '@/utils/formUtils';
 import FormConfirmation from './FormConfirmation';
 
 const MarketForm: React.FC = () => {
@@ -88,6 +87,9 @@ const MarketForm: React.FC = () => {
     else if (name === 'phone' && !validatePhone(value)) {
       errorMessage = "Proszę podać poprawny numer telefonu";
     }
+    else if (name === 'postalCode' && !validatePostalCode(value)) {
+      errorMessage = "Proszę podać poprawny kod pocztowy (XX-XXX)";
+    }
     
     // Update errors state
     setErrors(prev => ({
@@ -131,6 +133,10 @@ const MarketForm: React.FC = () => {
       }
       else if (key === 'phone' && !validatePhone(value)) {
         newErrors[key] = "Proszę podać poprawny numer telefonu";
+        formIsValid = false;
+      }
+      else if (key === 'postalCode' && !validatePostalCode(value)) {
+        newErrors[key] = "Proszę podać poprawny kod pocztowy (XX-XXX)";
         formIsValid = false;
       }
     });
@@ -211,19 +217,54 @@ const MarketForm: React.FC = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address">Adres (ulica, kod pocztowy, miejscowość):</Label>
-            <Textarea 
-              id="address" 
-              name="address" 
-              value={formData.address} 
+            <Label htmlFor="street">Ulica:</Label>
+            <Input 
+              id="street" 
+              name="street" 
+              value={formData.street} 
               onChange={handleChange}
               onBlur={handleBlur}
-              className={errors.address ? "border-red-500" : ""} 
+              className={errors.street ? "border-red-500" : ""} 
               required 
             />
-            {errors.address && touchedFields.address && (
-              <p className="text-red-500 text-sm mt-1">{errors.address}</p>
+            {errors.street && touchedFields.street && (
+              <p className="text-red-500 text-sm mt-1">{errors.street}</p>
             )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="postalCode">Kod pocztowy:</Label>
+              <Input 
+                id="postalCode" 
+                name="postalCode" 
+                value={formData.postalCode} 
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="XX-XXX"
+                className={errors.postalCode ? "border-red-500" : ""} 
+                required 
+              />
+              {errors.postalCode && touchedFields.postalCode && (
+                <p className="text-red-500 text-sm mt-1">{errors.postalCode}</p>
+              )}
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="city">Miejscowość:</Label>
+              <Input 
+                id="city" 
+                name="city" 
+                value={formData.city} 
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.city ? "border-red-500" : ""} 
+                required 
+              />
+              {errors.city && touchedFields.city && (
+                <p className="text-red-500 text-sm mt-1">{errors.city}</p>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
