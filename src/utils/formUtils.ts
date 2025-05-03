@@ -24,7 +24,8 @@ export const validatePostalCode = (postalCode: string): boolean => {
 
 export interface FormData {
   companyName: string;
-  contactPerson: string;
+  firstName: string; // Changed from contactPerson to firstName
+  lastName: string;  // Added lastName field
   street: string;
   postalCode: string;
   city: string;
@@ -53,7 +54,8 @@ export interface FormErrors {
 
 export const initialFormData: FormData = {
   companyName: "",
-  contactPerson: "",
+  firstName: "",    // Changed from contactPerson to firstName
+  lastName: "",     // Added lastName field
   street: "",
   postalCode: "",
   city: "",
@@ -75,8 +77,22 @@ export const initialFormData: FormData = {
   acceptPrivacy: false,
 };
 
-// Mock database for submissions
-let formSubmissions: FormData[] = [];
+// Persistent storage for submissions - using browser's localStorage for persistence
+// Initialize from localStorage if available, otherwise use empty array
+const getStoredSubmissions = (): FormData[] => {
+  try {
+    const stored = localStorage.getItem('formSubmissions');
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (error) {
+    console.error('Error retrieving stored submissions:', error);
+  }
+  return [];
+};
+
+// Initialize submissions from localStorage
+let formSubmissions: FormData[] = getStoredSubmissions();
 
 export const submitForm = (data: FormData): void => {
   // Add submission date and time in the required format YYYY-MM-DD HH:mm:ss
@@ -94,9 +110,18 @@ export const submitForm = (data: FormData): void => {
     }).replace(/(\d+)\.(\d+)\.(\d+), (\d+):(\d+):(\d+)/, '$3-$2-$1 $4:$5:$6')
   };
   
+  // Add to the submissions array
   formSubmissions.push(submissionData);
+  
+  // Store updated submissions in localStorage for persistence
+  try {
+    localStorage.setItem('formSubmissions', JSON.stringify(formSubmissions));
+  } catch (error) {
+    console.error('Error saving submissions to localStorage:', error);
+  }
+  
   console.log("Form submitted:", submissionData);
-  // In a real application, this would be an API call
+  console.log("Total submissions:", formSubmissions.length);
 };
 
 export const getSubmissions = (): FormData[] => {
@@ -107,7 +132,8 @@ export const getSubmissions = (): FormData[] => {
 export const formFieldLabels: Record<string, string> = {
   submissionDateTime: "Data i godzina zgłoszenia",
   companyName: "Pełna nazwa firmy",
-  contactPerson: "Imię i nazwisko osoby zgłaszającej",
+  firstName: "Imię",                 // Updated from contactPerson to separate fields
+  lastName: "Nazwisko",              // New field
   street: "Ulica",
   postalCode: "Kod pocztowy",
   city: "Miejscowość",
@@ -133,7 +159,8 @@ export const formFieldLabels: Record<string, string> = {
 export const formFieldDescriptions: Record<string, string> = {
   submissionDateTime: "Data i godzina przesłania zgłoszenia w formacie RRRR-MM-DD GG:MM:SS",
   companyName: "Pełna nazwa firmy, pod którą prowadzona jest działalność",
-  contactPerson: "Imię i nazwisko osoby odpowiedzialnej za zgłoszenie",
+  firstName: "Imię osoby odpowiedzialnej za zgłoszenie",     // Updated description
+  lastName: "Nazwisko osoby odpowiedzialnej za zgłoszenie",  // New description
   street: "Nazwa ulicy wraz z numerem budynku/lokalu",
   postalCode: "Format: XX-XXX",
   city: "Nazwa miejscowości",

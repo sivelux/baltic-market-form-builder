@@ -213,20 +213,39 @@ const MarketForm: React.FC = () => {
                 <p className="text-red-500 text-sm mt-1">{errors.companyName}</p>
               )}
             </div>
-            
+          </div>
+
+          {/* Split the name into firstName and lastName */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="contactPerson">Imię i nazwisko osoby zgłaszającej:</Label>
+              <Label htmlFor="firstName">Imię:</Label>
               <Input 
-                id="contactPerson" 
-                name="contactPerson" 
-                value={formData.contactPerson} 
+                id="firstName" 
+                name="firstName" 
+                value={formData.firstName} 
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={errors.contactPerson ? "border-red-500" : ""} 
+                className={errors.firstName ? "border-red-500" : ""} 
                 required 
               />
-              {errors.contactPerson && touchedFields.contactPerson && (
-                <p className="text-red-500 text-sm mt-1">{errors.contactPerson}</p>
+              {errors.firstName && touchedFields.firstName && (
+                <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+              )}
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Nazwisko:</Label>
+              <Input 
+                id="lastName" 
+                name="lastName" 
+                value={formData.lastName} 
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.lastName ? "border-red-500" : ""} 
+                required 
+              />
+              {errors.lastName && touchedFields.lastName && (
+                <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
               )}
             </div>
           </div>

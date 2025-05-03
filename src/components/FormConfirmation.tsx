@@ -1,11 +1,8 @@
+
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { FormData } from '@/utils/formUtils';
-import { Printer } from 'lucide-react';
-import { ArrowLeft } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { PrinterIcon, CheckCircle2 } from 'lucide-react';
 
 interface FormConfirmationProps {
   formData: FormData;
@@ -13,204 +10,161 @@ interface FormConfirmationProps {
 }
 
 const FormConfirmation: React.FC<FormConfirmationProps> = ({ formData, onReturn }) => {
+  // Helper function to format boolean values
+  const formatBooleanValue = (value: boolean): string => value ? 'Tak' : 'Nie';
+
   const handlePrint = () => {
     window.print();
   };
-  
-  // Helper function to format radio values
-  const formatBoolean = (value: "TAK" | "NIE") => value;
-  
-  // Helper function to format checkbox values
-  const formatCheckbox = (value: boolean) => value ? "TAK" : "NIE";
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 bg-white rounded-lg shadow print:shadow-none">
-      {/* Top confirmation message */}
-      <Alert className="mb-6 bg-baltic-blue/10 border-baltic-blue text-baltic-blue font-medium">
-        <CheckCircle className="h-5 w-5 mr-2" />
-        <AlertDescription className="text-baltic-blue font-semibold">
-          Formularz został pomyślnie wysłany. Dziękujemy za zgłoszenie!
-        </AlertDescription>
-      </Alert>
-      
-      <h2 className="text-2xl font-bold text-baltic-blue mb-6 text-center">
-        Formularz został pomyślnie wypełniony. Oto podsumowanie zgłoszenia:
-      </h2>
-      
-      <div className="space-y-8 print:space-y-6">
-        {/* Dane wystawcy */}
-        <div>
-          <h3 className="text-xl font-semibold text-baltic-blue mb-4">Dane wystawcy</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Pełna nazwa firmy:</p>
-              <p className="pl-3">{formData.companyName}</p>
-            </div>
-            
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Imię i nazwisko osoby zgłaszającej:</p>
-              <p className="pl-3">{formData.contactPerson}</p>
-            </div>
-          </div>
-          
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Ulica:</p>
-              <p className="pl-3">{formData.street}</p>
-            </div>
-            
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Kod pocztowy:</p>
-              <p className="pl-3">{formData.postalCode}</p>
-            </div>
-            
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Miejscowość:</p>
-              <p className="pl-3">{formData.city}</p>
-            </div>
-          </div>
-          
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">NIP:</p>
-              <p className="pl-3">{formData.nip}</p>
-            </div>
-            
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Adres e-mail:</p>
-              <p className="pl-3">{formData.email}</p>
-            </div>
-          </div>
-          
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Numer telefonu:</p>
-              <p className="pl-3">{formData.phone}</p>
-            </div>
-            
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Czy uczestniczył/a Pan/Pani w Jarmarku Bałtyckim w 2024 roku?</p>
-              <p className="pl-3">{formatBoolean(formData.participatedLastYear)}</p>
-            </div>
-          </div>
+    <div className="space-y-8 w-full max-w-4xl mx-auto print:max-w-full">
+      <div className="flex flex-col items-center justify-center space-y-4 print:mb-8">
+        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center print:hidden">
+          <CheckCircle2 className="w-10 h-10 text-green-600" />
         </div>
+        <h1 className="text-2xl md:text-3xl font-bold text-center text-baltic-blue print:text-black">
+          Dziękujemy za zgłoszenie!
+        </h1>
+        <p className="text-center text-gray-600 max-w-lg print:text-black">
+          Twoje zgłoszenie zostało zapisane. Prosimy zachować podsumowanie zgłoszenia.
+          Skontaktujemy się z Państwem w sprawie dalszych kroków.
+        </p>
+        <div className="flex space-x-4 print:hidden mt-4">
+          <Button onClick={onReturn} variant="outline">
+            Powrót do formularza
+          </Button>
+          <Button onClick={handlePrint} className="bg-baltic-blue hover:bg-baltic-orange text-white flex items-center gap-2">
+            <PrinterIcon className="w-4 h-4" />
+            Drukuj potwierdzenie
+          </Button>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow p-6 print:shadow-none print:p-0">
+        <h2 className="text-xl font-semibold mb-4 text-baltic-blue print:text-black">
+          Podsumowanie zgłoszenia
+        </h2>
         
-        <Separator className="print:hidden" />
-        
-        {/* Informacje techniczne */}
-        <div>
-          <h3 className="text-xl font-semibold text-baltic-blue mb-4">Informacje techniczne</h3>
-          
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Kategoria wystawcy:</p>
-              <p className="pl-3">{formData.category}</p>
-            </div>
-            
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Rodzaj stoiska:</p>
-              <p className="pl-3">{formData.boothType}</p>
-            </div>
-            
-            {formData.boothDimensions && (
-              <div className="space-y-1">
-                <p className="font-medium text-gray-600">Dokładne wymiary namiotu/food trucka:</p>
-                <p className="pl-3">{formData.boothDimensions}</p>
+        <div className="space-y-6">
+          <section>
+            <h3 className="font-medium text-lg mb-3 text-baltic-blue print:text-black border-b pb-1">Dane zgłaszającego</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-gray-500 text-sm">Pełna nazwa firmy:</p>
+                <p className="font-medium">{formData.companyName}</p>
               </div>
-            )}
-            
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Podłączenie do prądu:</p>
-              <p className="pl-3">{formData.powerConnection}</p>
+              <div>
+                <p className="text-gray-500 text-sm">Imię i nazwisko zgłaszającego:</p>
+                <p className="font-medium">{formData.firstName} {formData.lastName}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">NIP:</p>
+                <p className="font-medium">{formData.nip}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">Adres:</p>
+                <p className="font-medium">{formData.street}, {formData.postalCode} {formData.city}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">Email:</p>
+                <p className="font-medium">{formData.email}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">Telefon:</p>
+                <p className="font-medium">{formData.phone}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">Uczestniczył/a w poprzedniej edycji Jarmarku:</p>
+                <p className="font-medium">{formData.participatedLastYear}</p>
+              </div>
             </div>
-            
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Asortyment sprzedaży:</p>
-              <p className="pl-3">{formData.products}</p>
+          </section>
+
+          <section>
+            <h3 className="font-medium text-lg mb-3 text-baltic-blue print:text-black border-b pb-1">Informacje techniczne</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-gray-500 text-sm">Kategoria wystawcy:</p>
+                <p className="font-medium">{formData.category}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">Rodzaj stoiska:</p>
+                <p className="font-medium">{formData.boothType}</p>
+              </div>
+              {formData.boothDimensions && (
+                <div>
+                  <p className="text-gray-500 text-sm">Dokładne wymiary namiotu/food trucka:</p>
+                  <p className="font-medium">{formData.boothDimensions}</p>
+                </div>
+              )}
+              <div>
+                <p className="text-gray-500 text-sm">Podłączenie do prądu:</p>
+                <p className="font-medium">{formData.powerConnection}</p>
+              </div>
+              <div className="md:col-span-2">
+                <p className="text-gray-500 text-sm">Asortyment sprzedaży:</p>
+                <p className="font-medium">{formData.products}</p>
+              </div>
+              {formData.notes && (
+                <div className="md:col-span-2">
+                  <p className="text-gray-500 text-sm">Uwagi:</p>
+                  <p className="font-medium">{formData.notes}</p>
+                </div>
+              )}
+              <div>
+                <p className="text-gray-500 text-sm">Potrzebne miejsce parkingowe:</p>
+                <p className="font-medium">{formData.needsParking}</p>
+              </div>
             </div>
-            
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Uwagi:</p>
-              <p className="pl-3">{formData.notes || "Brak uwag"}</p>
+          </section>
+
+          <section>
+            <h3 className="font-medium text-lg mb-3 text-baltic-blue print:text-black border-b pb-1">Preferencje lokalizacji</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <p className="text-gray-500 text-sm">Pierwszy wybór lokalizacji:</p>
+                <p className="font-medium">{formData.location1}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">Drugi wybór lokalizacji:</p>
+                <p className="font-medium">{formData.location2}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">Trzeci wybór lokalizacji:</p>
+                <p className="font-medium">{formData.location3}</p>
+              </div>
             </div>
-            
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Czy potrzebne jest miejsce parkingowe dla auta?</p>
-              <p className="pl-3">{formatBoolean(formData.needsParking)}</p>
+          </section>
+
+          <section>
+            <h3 className="font-medium text-lg mb-3 text-baltic-blue print:text-black border-b pb-1">Akceptacje</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-gray-500 text-sm">Akceptacja regulaminu:</p>
+                <p className="font-medium">{formatBooleanValue(formData.acceptTerms)}</p>
+              </div>
+              <div>
+                <p className="text-gray-500 text-sm">Zgoda na przetwarzanie danych:</p>
+                <p className="font-medium">{formatBooleanValue(formData.acceptPrivacy)}</p>
+              </div>
             </div>
-          </div>
+          </section>
         </div>
-        
-        <Separator className="print:hidden" />
-        
-        {/* Wybór lokalizacji */}
-        <div>
-          <h3 className="text-xl font-semibold text-baltic-blue mb-4">Wybór lokalizacji</h3>
-          
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Pierwszy wybór lokalizacji:</p>
-              <p className="pl-3">{formData.location1}</p>
-            </div>
-            
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Drugi wybór lokalizacji:</p>
-              <p className="pl-3">{formData.location2}</p>
-            </div>
-            
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Trzeci wybór lokalizacji:</p>
-              <p className="pl-3">{formData.location3}</p>
-            </div>
-          </div>
-        </div>
-        
-        <Separator className="print:hidden" />
-        
-        {/* Akceptacja warunków */}
-        <div>
-          <h3 className="text-xl font-semibold text-baltic-blue mb-4">Akceptacja warunków</h3>
-          
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Akceptacja regulaminu Jarmarku Bałtyckiego:</p>
-              <p className="pl-3">{formatCheckbox(formData.acceptTerms)}</p>
-            </div>
-            
-            <div className="space-y-1">
-              <p className="font-medium text-gray-600">Zgoda na przetwarzanie danych osobowych:</p>
-              <p className="pl-3">{formatCheckbox(formData.acceptPrivacy)}</p>
-            </div>
-          </div>
-        </div>
-        
-        {/* Bottom confirmation message */}
-        <Alert className="mt-6 bg-baltic-blue/10 border-baltic-blue text-baltic-blue font-medium print:hidden">
-          <CheckCircle className="h-5 w-5 mr-2" />
-          <AlertDescription className="text-baltic-blue font-semibold">
-            Formularz został pomyślnie wysłany. Dziękujemy za zgłoszenie!
-          </AlertDescription>
-        </Alert>
       </div>
-      
-      <div className="mt-8 flex flex-col sm:flex-row justify-between gap-4 print:hidden">
-        <Button
-          onClick={onReturn}
-          variant="outline"
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft size={18} /> Powrót do formularza
-        </Button>
-        
-        <Button
-          onClick={handlePrint}
-          className="bg-baltic-blue hover:bg-baltic-orange text-white flex items-center gap-2"
-        >
-          <Printer size={18} /> Drukuj / Zapisz PDF
-        </Button>
+
+      <div className="text-center text-sm text-gray-500 print:mt-8">
+        <p>Nr zgłoszenia: {new Date().getTime().toString(36).toUpperCase()}</p>
+        <p className="mt-1">
+          Data zgłoszenia: {new Date().toLocaleString('pl-PL', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit', 
+            hour: '2-digit',
+            minute: '2-digit'
+          })}
+        </p>
       </div>
-      
-      {/* Add print-specific styles to the index.css file instead of here */}
     </div>
   );
 };

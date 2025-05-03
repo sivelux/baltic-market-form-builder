@@ -84,7 +84,8 @@ const AdminDashboard = () => {
       const filtered = submissions.filter((submission) => {
         return (
           submission.companyName.toLowerCase().includes(term) ||
-          submission.contactPerson.toLowerCase().includes(term) ||
+          submission.firstName.toLowerCase().includes(term) ||
+          submission.lastName.toLowerCase().includes(term) ||
           submission.email.toLowerCase().includes(term) ||
           submission.nip.includes(term) ||
           submission.products.toLowerCase().includes(term)
@@ -325,7 +326,7 @@ const AdminDashboard = () => {
                         <div className="text-xs text-gray-500">{submission.nip}</div>
                       </TableCell>
                       <TableCell>
-                        <div className="break-words">{submission.contactPerson}</div>
+                        <div className="break-words">{submission.firstName} {submission.lastName}</div>
                         <div className="text-xs break-words">
                           {submission.street}, {submission.postalCode} {submission.city}
                         </div>
@@ -386,7 +387,7 @@ const AdminDashboard = () => {
         )}
       </div>
 
-      {/* Pagination controls and entry display selector - improved responsiveness */}
+      {/* Pagination controls and entry display selector */}
       <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex items-center gap-2">
           <span className="text-sm text-gray-500">Pokaż</span>
@@ -429,6 +430,10 @@ const AdminDashboard = () => {
             </PaginationItem>
           </PaginationContent>
         </Pagination>
+      </div>
+
+      <div className="mt-4 text-center text-sm text-gray-500">
+        <p>Łącznie zgłoszeń: {submissions.length}</p>
       </div>
     </div>
   );
