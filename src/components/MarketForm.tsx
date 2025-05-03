@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,8 +9,13 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from "@/components/ui/sonner";
 import { FormData, FormErrors, initialFormData, validateEmail, validateNIP, validatePhone, validatePostalCode, submitForm } from '@/utils/formUtils';
 import FormConfirmation from './FormConfirmation';
+import { Download } from 'lucide-react';
 
-const MarketForm: React.FC = () => {
+interface MarketFormProps {
+  mapPdfUrl?: string;
+}
+
+const MarketForm: React.FC<MarketFormProps> = ({ mapPdfUrl = "#" }) => {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [showBoothDimensions, setShowBoothDimensions] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -587,7 +591,19 @@ const MarketForm: React.FC = () => {
       {/* Wybór lokalizacji */}
       <div className="p-6 bg-white rounded-lg shadow">
         <h2 className="text-xl font-semibold mb-4 text-baltic-blue">Wybór lokalizacji</h2>
-        <p className="text-sm italic mb-4">(prosimy o wskazanie kilku preferencji – w razie niedostępności pierwszego wyboru)</p>
+        <p className="text-sm italic mb-3">(prosimy o wskazanie kilku preferencji – w razie niedostępności pierwszego wyboru)</p>
+        
+        {/* Map download link - new addition */}
+        <a 
+          href={mapPdfUrl} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 font-bold text-lg text-baltic-blue hover:text-baltic-orange underline mb-6 transition-colors"
+          download="mapa-jarmark-baltycki.pdf"
+        >
+          <Download size={20} />
+          <span>📍 Pobierz mapę wydarzenia (PDF)</span>
+        </a>
         
         <div className="space-y-4">
           <div className="space-y-2">

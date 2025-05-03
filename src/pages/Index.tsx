@@ -9,7 +9,7 @@ const Index = () => {
     <div className="min-h-screen bg-baltic-beige">
       <div className="container py-8">
         <FormHeader />
-        <MarketForm />
+        <MarketForm mapPdfUrl="/mapa-jarmark-baltycki.pdf" />
         <FormFooter />
       </div>
     </div>
