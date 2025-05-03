@@ -104,10 +104,14 @@ const AdminTable: React.FC<AdminTableProps> = ({
                           <AccordionTrigger className="py-0 hover:no-underline">
                             <span className="text-sm text-baltic-blue hover:text-baltic-orange">Rozwiń</span>
                           </AccordionTrigger>
-                          <AccordionContent className="absolute left-0 right-0 w-full z-10">
-                            <div className="container mx-auto px-4 mt-2">
-                              <DetailedView submission={submission} />
-                            </div>
+                          <AccordionContent>
+                            <tr className="border-0">
+                              <td colSpan={9} className="p-0">
+                                <div className="w-full mt-2">
+                                  <DetailedView submission={submission} />
+                                </div>
+                              </td>
+                            </tr>
                           </AccordionContent>
                         </AccordionItem>
                       </Accordion>
