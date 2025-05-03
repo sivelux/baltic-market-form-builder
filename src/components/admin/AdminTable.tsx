@@ -1,22 +1,9 @@
 
 import React, { useState } from 'react';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { ArrowUpDown, Eye } from 'lucide-react';
 import { FormData } from '@/utils/formUtils';
-import DetailedView from './DetailedView';
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Info } from 'lucide-react';
+import { Card, CardContent } from "@/components/ui/card";
+import './SubmissionCard.css';
 
 interface AdminTableProps {
   displayedSubmissions: FormData[];
@@ -35,93 +22,141 @@ const AdminTable: React.FC<AdminTableProps> = ({
   sortDirection,
   toggleSortDirection
 }) => {
-  const [openSubmissionId, setOpenSubmissionId] = useState<string | null>(null);
-  
+  const [flippedCards, setFlippedCards] = useState<Record<string, boolean>>({});
+
+  const toggleCardFlip = (id: string) => {
+    setFlippedCards(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
   return (
-    <div className="rounded-md border">
+    <div>
       {filteredSubmissions.length === 0 ? (
         <div className="p-6 text-center text-gray-500">
           Brak wyników dla podanego wyszukiwania.
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <Table>
-            <TableCaption>Lista zgłoszeń: {filteredSubmissions.length}</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-12">#</TableHead>
-                <TableHead 
-                  className="w-32 cursor-pointer"
-                  onClick={toggleSortDirection}
-                >
-                  <div className="flex items-center">
-                    Data zgłoszenia
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </div>
-                </TableHead>
-                <TableHead className="w-36 min-w-[140px]">Firma</TableHead>
-                <TableHead className="w-40 min-w-[160px]">Osoba kontaktowa</TableHead>
-                <TableHead className="w-36 min-w-[140px]">Email / Telefon</TableHead>
-                <TableHead className="w-36 min-w-[140px]">Kategoria</TableHead>
-                <TableHead className="w-36 min-w-[140px]">Lokalizacja</TableHead>
-                <TableHead className="w-36 min-w-[140px]">Asortyment</TableHead>
-                <TableHead className="w-16 text-center">Szczegóły</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {displayedSubmissions.map((submission, index) => {
-                // Generate a unique ID for each submission using index
-                const submissionId = `submission-${index}`;
-                
-                return (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">{(currentPage - 1) * entriesPerPage + index + 1}</TableCell>
-                    <TableCell className="text-xs whitespace-nowrap">
-                      {submission.submissionDateTime || 'Brak daty'}
-                    </TableCell>
-                    <TableCell className="font-semibold">
-                      <div className="break-words">{submission.companyName}</div>
-                      <div className="text-xs text-gray-500">{submission.nip}</div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="break-words">{submission.firstName} {submission.lastName}</div>
-                      <div className="text-xs break-words">
-                        {submission.street}, {submission.postalCode} {submission.city}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+          {displayedSubmissions.map((submission, index) => {
+            const submissionId = `submission-${index}`;
+            const isFlipped = flippedCards[submissionId] || false;
+            
+            return (
+              <div 
+                key={submissionId} 
+                className={`submission-card-container ${isFlipped ? 'flipped' : ''}`}
+              >
+                {/* Front of Card */}
+                <Card className={`submission-card submission-card-front shadow-md h-full`}>
+                  <CardContent className="p-6">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="font-semibold text-lg text-baltic-blue">
+                        {submission.companyName}
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="break-words">{submission.email}</div>
-                      <div className="text-xs">{submission.phone}</div>
-                    </TableCell>
-                    <TableCell className="max-w-36" title={submission.category}>
-                      <div className="line-clamp-2 break-words">{submission.category}</div>
-                    </TableCell>
-                    <TableCell className="max-w-36" title={submission.location1}>
-                      <div className="line-clamp-2 break-words">{submission.location1}</div>
-                    </TableCell>
-                    <TableCell className="max-w-36" title={submission.products}>
-                      <div className="line-clamp-2 break-words">{submission.products}</div>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Sheet>
-                        <SheetTrigger asChild>
-                          <button 
-                            className="text-baltic-blue hover:text-baltic-orange transition-colors"
-                            aria-label="Pokaż szczegóły zgłoszenia"
-                          >
-                            <Eye size={18} />
-                          </button>
-                        </SheetTrigger>
-                        <SheetContent className="w-[90%] sm:w-[600px] lg:w-[800px] overflow-y-auto">
-                          <DetailedView submission={submission} />
-                        </SheetContent>
-                      </Sheet>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+                      <button
+                        onClick={() => toggleCardFlip(submissionId)}
+                        className="bg-baltic-blue text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-baltic-orange transition-colors"
+                        aria-label="Więcej informacji"
+                      >
+                        <Info size={14} />
+                      </button>
+                    </div>
+
+                    <div className="text-xs text-gray-500 mb-3">
+                      {submission.submissionDateTime || 'Brak daty'}
+                    </div>
+
+                    <div className="space-y-3">
+                      <div>
+                        <div className="text-xs font-semibold text-gray-500">Osoba kontaktowa</div>
+                        <div className="text-sm">{submission.firstName} {submission.lastName}</div>
+                      </div>
+                      
+                      <div>
+                        <div className="text-xs font-semibold text-gray-500">Kontakt</div>
+                        <div className="text-sm">{submission.email}</div>
+                        <div className="text-sm">{submission.phone}</div>
+                      </div>
+                      
+                      <div>
+                        <div className="text-xs font-semibold text-gray-500">Kategoria</div>
+                        <div className="text-sm line-clamp-1">{submission.category}</div>
+                      </div>
+
+                      <div>
+                        <div className="text-xs font-semibold text-gray-500">Lokalizacja</div>
+                        <div className="text-sm line-clamp-1">{submission.location1}</div>
+                      </div>
+                      
+                      <div>
+                        <div className="text-xs font-semibold text-gray-500">Asortyment</div>
+                        <div className="text-sm line-clamp-2">{submission.products}</div>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 text-center text-xs text-gray-500">
+                      Kliknij ikonę informacji, aby zobaczyć więcej szczegółów
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Back of Card */}
+                <Card className={`submission-card submission-card-back shadow-md h-full`}>
+                  <CardContent className="p-6 overflow-auto">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="font-semibold text-lg text-baltic-blue">
+                        Szczegóły zgłoszenia
+                      </div>
+                      <button
+                        onClick={() => toggleCardFlip(submissionId)}
+                        className="bg-baltic-orange text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-baltic-blue transition-colors"
+                        aria-label="Powrót"
+                      >
+                        <Info size={14} />
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div>
+                        <div className="text-xs font-semibold text-gray-500">NIP</div>
+                        <div className="text-sm">{submission.nip}</div>
+                      </div>
+                      
+                      <div>
+                        <div className="text-xs font-semibold text-gray-500">Adres</div>
+                        <div className="text-sm">{submission.street}</div>
+                        <div className="text-sm">{submission.postalCode} {submission.city}</div>
+                      </div>
+
+                      <div>
+                        <div className="text-xs font-semibold text-gray-500">Lokalizacje alternatywne</div>
+                        {submission.location2 && <div className="text-sm">{submission.location2}</div>}
+                        {submission.location3 && <div className="text-sm">{submission.location3}</div>}
+                      </div>
+
+                      <div>
+                        <div className="text-xs font-semibold text-gray-500">Pełny asortyment</div>
+                        <div className="text-sm max-h-24 overflow-y-auto border border-gray-100 rounded p-2 bg-white whitespace-pre-wrap break-words">
+                          {submission.products}
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <div className="text-xs font-semibold text-gray-500">Dodatkowe informacje</div>
+                        {submission.comments && (
+                          <div className="text-sm max-h-24 overflow-y-auto border border-gray-100 rounded p-2 bg-white whitespace-pre-wrap break-words">
+                            {submission.comments}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

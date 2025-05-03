@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { FormData, getSubmissions } from '@/utils/formUtils';
 import AdminHeader from './admin/AdminHeader';
@@ -84,14 +83,16 @@ const AdminDashboard = () => {
         submissions={submissions}
       />
       
-      <AdminTable 
-        displayedSubmissions={displayedSubmissions}
-        filteredSubmissions={filteredSubmissions}
-        currentPage={currentPage}
-        entriesPerPage={entriesPerPage}
-        sortDirection={sortDirection}
-        toggleSortDirection={toggleSortDirection}
-      />
+      <div className="my-6">
+        <AdminTable 
+          displayedSubmissions={displayedSubmissions}
+          filteredSubmissions={filteredSubmissions}
+          currentPage={currentPage}
+          entriesPerPage={entriesPerPage}
+          sortDirection={sortDirection}
+          toggleSortDirection={toggleSortDirection}
+        />
+      </div>
       
       <AdminPagination 
         currentPage={currentPage}
