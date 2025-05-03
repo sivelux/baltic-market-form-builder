@@ -400,10 +400,6 @@ const MarketForm: React.FC = () => {
                 <Label htmlFor="category-2">Wytwórcy produktów tradycyjnych i regionalnych z województwa zachodniopomorskiego</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Pozostali (np. pośrednicy, handlarze itp.)" id="category-3" />
-                <Label htmlFor="category-3">Pozostali (np. pośrednicy, handlarze itp.)</Label>
-              </div>
-              <div className="flex items-center space-x-2">
                 <RadioGroupItem value="Producenci artykułów spożywczych" id="category-4" />
                 <Label htmlFor="category-4">Producenci artykułów spożywczych</Label>
               </div>
@@ -414,6 +410,10 @@ const MarketForm: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="Gastronomia" id="category-6" />
                 <Label htmlFor="category-6">Gastronomia</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Pozostali (np. pośrednicy, handlarze itp.)" id="category-3" />
+                <Label htmlFor="category-3">Pozostali (np. pośrednicy, handlarze itp.)</Label>
               </div>
             </RadioGroup>
             {errors.category && touchedFields.category && (
