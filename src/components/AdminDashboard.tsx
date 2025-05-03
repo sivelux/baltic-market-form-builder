@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,8 +32,8 @@ import {
   PaginationPrevious,
   PaginationEllipsis,
 } from '@/components/ui/pagination';
-import { Search, Download, FileDown, ArrowUpDown, DoorOpen } from 'lucide-react';
-import { FormData, getSubmissions, generateCSV, generateExcel, downloadCSV, downloadExcel, generateEnhancedExcel, formFieldLabels } from '@/utils/formUtils';
+import { Search, Download, ArrowUpDown, DoorOpen } from 'lucide-react';
+import { FormData, getSubmissions, generateCSV, downloadCSV, formFieldLabels } from '@/utils/formUtils';
 import { toast } from '@/components/ui/sonner';
 import { useAuth } from '@/context/AuthContext';
 
@@ -130,23 +129,6 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error('Error generating CSV:', error);
       toast.error('Wystąpił błąd podczas generowania pliku CSV.');
-    }
-  };
-
-  // Handle downloading data as Excel with improved formatting
-  const handleDownloadExcel = () => {
-    try {
-      // Use enhanced Excel with proper UTF-8 encoding and formatting
-      const excelData = generateEnhancedExcel(submissions);
-      downloadExcel(
-        excelData, 
-        `jarmark_baltycki_zgloszenia_${new Date().toLocaleDateString('pl-PL')}.xlsx`,
-        true
-      );
-      toast.success('Plik Excel został wygenerowany pomyślnie.');
-    } catch (error) {
-      console.error('Error generating Excel:', error);
-      toast.error('Wystąpił błąd podczas generowania pliku Excel.');
     }
   };
 
@@ -273,12 +255,6 @@ const AdminDashboard = () => {
           >
             <Download className="h-4 w-4" /> CSV
           </Button>
-          <Button
-            onClick={handleDownloadExcel}
-            className="bg-baltic-blue hover:bg-baltic-orange text-white flex items-center gap-2"
-          >
-            <FileDown className="h-4 w-4" /> Excel
-          </Button>
         </div>
       </div>
 
@@ -348,7 +324,7 @@ const AdminDashboard = () => {
                               <span className="text-sm text-baltic-blue hover:text-baltic-orange">Rozwiń</span>
                             </AccordionTrigger>
                             <AccordionContent>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-sm py-2">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-sm py-2 bg-gray-50 rounded-lg p-3">
                                 {/* Iterate through all fields with their Polish labels */}
                                 {Object.entries(formFieldLabels).map(([key, label]) => {
                                   const value = submission[key as keyof FormData];
@@ -361,14 +337,14 @@ const AdminDashboard = () => {
                                   const isLongText = typeof formattedValue === 'string' && formattedValue.length > 50;
                                   
                                   return (
-                                    <div key={key} className="mb-2">
-                                      <div className="font-semibold text-baltic-blue mb-1">{label}:</div>
+                                    <div key={key} className="mb-3 border-b border-gray-100 pb-2">
+                                      <div className="font-semibold text-baltic-blue mb-1 bg-gray-100 px-2 py-1 rounded">{label}:</div>
                                       {isLongText ? (
-                                        <div className="max-h-32 overflow-y-auto border border-gray-200 rounded p-2 bg-gray-50 whitespace-pre-wrap break-words">
+                                        <div className="max-h-32 overflow-y-auto border border-gray-200 rounded p-2 bg-white whitespace-pre-wrap break-words">
                                           {formattedValue}
                                         </div>
                                       ) : (
-                                        <div className="break-words">{formattedValue}</div>
+                                        <div className="break-words px-2">{formattedValue}</div>
                                       )}
                                     </div>
                                   );
