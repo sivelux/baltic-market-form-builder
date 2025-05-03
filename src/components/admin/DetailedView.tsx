@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { FormData, formFieldLabels } from '@/utils/formUtils';
 
@@ -14,10 +15,10 @@ const DetailedView: React.FC<DetailedViewProps> = ({ submission }) => {
   };
   
   return (
-    <div className="py-4 px-3 mt-2 bg-gray-50 rounded-lg border border-gray-200">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
+    <div className="py-4 px-6 mt-2 bg-gray-50 rounded-md border border-gray-200">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
         {/* Group 1: Informacje podstawowe */}
-        <div className="col-span-1 sm:col-span-2 lg:col-span-3 mb-4">
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-4">
           <h3 className="font-bold text-baltic-blue border-b pb-1 mb-2">Informacje podstawowe</h3>
         </div>
         
@@ -31,14 +32,14 @@ const DetailedView: React.FC<DetailedViewProps> = ({ submission }) => {
           
           return (
             <div key={key} className="bg-white rounded-md p-3 border border-gray-100 shadow-sm">
-              <div className="font-semibold text-baltic-blue mb-1">{label}</div>
-              <div className="break-words">{formattedValue}</div>
+              <div className="text-xs font-semibold text-gray-500 mb-1">{label}</div>
+              <div className="text-sm text-gray-900 break-words">{formattedValue}</div>
             </div>
           );
         })}
         
         {/* Group 2: Adres */}
-        <div className="col-span-1 sm:col-span-2 lg:col-span-3 mb-4 mt-4">
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-4 mt-4">
           <h3 className="font-bold text-baltic-blue border-b pb-1 mb-2">Adres</h3>
         </div>
         
@@ -52,14 +53,14 @@ const DetailedView: React.FC<DetailedViewProps> = ({ submission }) => {
           
           return (
             <div key={key} className="bg-white rounded-md p-3 border border-gray-100 shadow-sm">
-              <div className="font-semibold text-baltic-blue mb-1">{label}</div>
-              <div className="break-words">{formattedValue}</div>
+              <div className="text-xs font-semibold text-gray-500 mb-1">{label}</div>
+              <div className="text-sm text-gray-900 break-words">{formattedValue}</div>
             </div>
           );
         })}
         
         {/* Group 3: Informacje o stoisku */}
-        <div className="col-span-1 sm:col-span-2 lg:col-span-3 mb-4 mt-4">
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-4 mt-4">
           <h3 className="font-bold text-baltic-blue border-b pb-1 mb-2">Informacje o stoisku</h3>
         </div>
         
@@ -74,21 +75,21 @@ const DetailedView: React.FC<DetailedViewProps> = ({ submission }) => {
           const isLongText = typeof formattedValue === 'string' && formattedValue.length > 50;
           
           return (
-            <div key={key} className={`bg-white rounded-md p-3 border border-gray-100 shadow-sm ${isLongText ? 'col-span-1 sm:col-span-2 lg:col-span-3' : ''}`}>
-              <div className="font-semibold text-baltic-blue mb-1">{label}</div>
+            <div key={key} className={`bg-white rounded-md p-3 border border-gray-100 shadow-sm ${isLongText ? 'col-span-1 md:col-span-2 lg:col-span-3' : ''}`}>
+              <div className="text-xs font-semibold text-gray-500 mb-1">{label}</div>
               {isLongText ? (
-                <div className="max-h-32 overflow-y-auto border border-gray-100 rounded p-2 whitespace-pre-wrap break-words">
+                <div className="max-h-48 overflow-y-auto border border-gray-100 rounded p-2 bg-white text-sm text-gray-900 whitespace-pre-wrap break-words">
                   {formattedValue}
                 </div>
               ) : (
-                <div className="break-words">{formattedValue}</div>
+                <div className="text-sm text-gray-900 break-words">{formattedValue}</div>
               )}
             </div>
           );
         })}
         
         {/* Group 4: Inne informacje */}
-        <div className="col-span-1 sm:col-span-2 lg:col-span-3 mb-4 mt-4">
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-4 mt-4">
           <h3 className="font-bold text-baltic-blue border-b pb-1 mb-2">Inne informacje</h3>
         </div>
         
@@ -104,14 +105,14 @@ const DetailedView: React.FC<DetailedViewProps> = ({ submission }) => {
             const isLongText = typeof formattedValue === 'string' && formattedValue.length > 50;
             
             return (
-              <div key={key} className={`bg-white rounded-md p-3 border border-gray-100 shadow-sm ${isLongText ? 'col-span-1 sm:col-span-2 lg:col-span-3' : ''}`}>
-                <div className="font-semibold text-baltic-blue mb-1">{label}</div>
+              <div key={key} className={`bg-white rounded-md p-3 border border-gray-100 shadow-sm ${isLongText ? 'col-span-1 md:col-span-2 lg:col-span-3' : ''}`}>
+                <div className="text-xs font-semibold text-gray-500 mb-1">{label}</div>
                 {isLongText ? (
-                  <div className="max-h-32 overflow-y-auto border border-gray-100 rounded p-2 whitespace-pre-wrap break-words">
+                  <div className="max-h-48 overflow-y-auto border border-gray-100 rounded p-2 bg-white text-sm text-gray-900 whitespace-pre-wrap break-words">
                     {formattedValue}
                   </div>
                 ) : (
-                  <div className="break-words">{formattedValue}</div>
+                  <div className="text-sm text-gray-900 break-words">{formattedValue}</div>
                 )}
               </div>
             );
