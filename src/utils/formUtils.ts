@@ -37,6 +37,10 @@ export interface FormData {
   acceptPrivacy: boolean;
 }
 
+export interface FormErrors {
+  [key: string]: string;
+}
+
 export const initialFormData: FormData = {
   companyName: "",
   contactPerson: "",
@@ -121,3 +125,4 @@ export const downloadExcel = (data: Blob, filename: string): void => {
   link.click();
   document.body.removeChild(link);
 };
+

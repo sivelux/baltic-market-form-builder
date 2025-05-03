@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,58 +8,134 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { toast } from "@/components/ui/sonner";
-import { FormData, initialFormData, validateEmail, validateNIP, validatePhone, submitForm } from '@/utils/formUtils';
+import { FormData, FormErrors, initialFormData, validateEmail, validateNIP, validatePhone, submitForm } from '@/utils/formUtils';
 
 const MarketForm: React.FC = () => {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [showBoothDimensions, setShowBoothDimensions] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Validate field on change if it has been touched
+    if (touchedFields[name]) {
+      validateField(name, value);
+    }
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setTouchedFields(prev => ({ ...prev, [name]: true }));
+    validateField(name, value);
   };
 
   const handleRadioChange = (name: string, value: string) => {
     setFormData(prev => ({ ...prev, [name]: value }));
+    setTouchedFields(prev => ({ ...prev, [name]: true }));
+    validateField(name, value);
     
     // Show/hide booth dimensions field based on selection
     if (name === 'boothType') {
       setShowBoothDimensions(value.includes('własny') || value.includes('Food truck'));
+      // If hiding booth dimensions, clear any error
+      if (!value.includes('własny') && !value.includes('Food truck')) {
+        setErrors(prev => {
+          const newErrors = { ...prev };
+          delete newErrors.boothDimensions;
+          return newErrors;
+        });
+      }
     }
   };
 
   const handleCheckboxChange = (name: string, checked: boolean) => {
     setFormData(prev => ({ ...prev, [name]: checked }));
+    setTouchedFields(prev => ({ ...prev, [name]: true }));
+    validateField(name, checked);
   };
 
+  // Validate a single field
+  const validateField = (name: string, value: any): boolean => {
+    let errorMessage = "";
+    
+    // Skip validation for boothDimensions if not shown
+    if (name === 'boothDimensions' && !showBoothDimensions) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors.boothDimensions;
+        return newErrors;
+      });
+      return true;
+    }
+    
+    // Required field validation
+    if (value === "" || value === false) {
+      errorMessage = "To pole jest wymagane";
+    }
+    // Specific field validations
+    else if (name === 'email' && !validateEmail(value)) {
+      errorMessage = "Proszę podać poprawny adres email";
+    }
+    else if (name === 'nip' && !validateNIP(value)) {
+      errorMessage = "NIP powinien składać się z 10 cyfr";
+    }
+    else if (name === 'phone' && !validatePhone(value)) {
+      errorMessage = "Proszę podać poprawny numer telefonu";
+    }
+    
+    // Update errors state
+    setErrors(prev => ({
+      ...prev,
+      [name]: errorMessage
+    }));
+    
+    return errorMessage === "";
+  };
+
+  // Validate all form fields
   const validateForm = (): boolean => {
-    // Check required fields
-    for (const [key, value] of Object.entries(formData)) {
-      if (value === "" || value === false) {
-        toast.error(`Proszę wypełnić wszystkie pola formularza.`);
-        return false;
+    const newErrors: FormErrors = {};
+    let formIsValid = true;
+    
+    // Mark all fields as touched
+    const allTouched: Record<string, boolean> = {};
+    
+    // Validate each field
+    Object.entries(formData).forEach(([key, value]) => {
+      allTouched[key] = true;
+      
+      // Skip validation for boothDimensions if not shown
+      if (key === 'boothDimensions' && !showBoothDimensions) {
+        return;
       }
-    }
-
-    // Validate email
-    if (!validateEmail(formData.email)) {
-      toast.error("Proszę podać poprawny adres email.");
-      return false;
-    }
-
-    // Validate NIP
-    if (!validateNIP(formData.nip)) {
-      toast.error("NIP powinien składać się z 10 cyfr.");
-      return false;
-    }
-
-    // Validate phone
-    if (!validatePhone(formData.phone)) {
-      toast.error("Proszę podać poprawny numer telefonu.");
-      return false;
-    }
-
-    return true;
+      
+      // Required field validation
+      if (value === "" || value === false) {
+        newErrors[key] = "To pole jest wymagane";
+        formIsValid = false;
+      }
+      // Specific field validations
+      else if (key === 'email' && !validateEmail(value)) {
+        newErrors[key] = "Proszę podać poprawny adres email";
+        formIsValid = false;
+      }
+      else if (key === 'nip' && !validateNIP(value)) {
+        newErrors[key] = "NIP powinien składać się z 10 cyfr";
+        formIsValid = false;
+      }
+      else if (key === 'phone' && !validatePhone(value)) {
+        newErrors[key] = "Proszę podać poprawny numer telefonu";
+        formIsValid = false;
+      }
+    });
+    
+    setErrors(newErrors);
+    setTouchedFields(allTouched);
+    
+    return formIsValid;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -70,6 +146,10 @@ const MarketForm: React.FC = () => {
       toast.success("Formularz został pomyślnie wypełniony. Dziękujemy za zgłoszenie!");
       setFormData(initialFormData);
       setShowBoothDimensions(false);
+      setErrors({});
+      setTouchedFields({});
+    } else {
+      toast.error("Proszę wypełnić wszystkie wymagane pola formularza.");
     }
   };
 
@@ -86,9 +166,14 @@ const MarketForm: React.FC = () => {
                 id="companyName" 
                 name="companyName" 
                 value={formData.companyName} 
-                onChange={handleChange} 
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.companyName ? "border-red-500" : ""} 
                 required 
               />
+              {errors.companyName && touchedFields.companyName && (
+                <p className="text-red-500 text-sm mt-1">{errors.companyName}</p>
+              )}
             </div>
             
             <div className="space-y-2">
@@ -97,9 +182,14 @@ const MarketForm: React.FC = () => {
                 id="contactPerson" 
                 name="contactPerson" 
                 value={formData.contactPerson} 
-                onChange={handleChange} 
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.contactPerson ? "border-red-500" : ""} 
                 required 
               />
+              {errors.contactPerson && touchedFields.contactPerson && (
+                <p className="text-red-500 text-sm mt-1">{errors.contactPerson}</p>
+              )}
             </div>
           </div>
 
@@ -109,9 +199,14 @@ const MarketForm: React.FC = () => {
               id="address" 
               name="address" 
               value={formData.address} 
-              onChange={handleChange} 
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={errors.address ? "border-red-500" : ""} 
               required 
             />
+            {errors.address && touchedFields.address && (
+              <p className="text-red-500 text-sm mt-1">{errors.address}</p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -121,9 +216,14 @@ const MarketForm: React.FC = () => {
                 id="nip" 
                 name="nip" 
                 value={formData.nip} 
-                onChange={handleChange} 
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.nip ? "border-red-500" : ""} 
                 required 
               />
+              {errors.nip && touchedFields.nip && (
+                <p className="text-red-500 text-sm mt-1">{errors.nip}</p>
+              )}
             </div>
             
             <div className="space-y-2">
@@ -133,9 +233,14 @@ const MarketForm: React.FC = () => {
                 name="email" 
                 type="email" 
                 value={formData.email} 
-                onChange={handleChange} 
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.email ? "border-red-500" : ""} 
                 required 
               />
+              {errors.email && touchedFields.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+              )}
             </div>
           </div>
 
@@ -146,14 +251,22 @@ const MarketForm: React.FC = () => {
                 id="phone" 
                 name="phone" 
                 value={formData.phone} 
-                onChange={handleChange} 
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.phone ? "border-red-500" : ""} 
                 required 
               />
+              {errors.phone && touchedFields.phone && (
+                <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+              )}
             </div>
             
             <div className="space-y-2">
-              <Label>Czy uczestniczył/a Pan/Pani w Jarmarku Bałtyckim w 2024 roku?</Label>
-              <RadioGroup value={formData.participatedLastYear} 
+              <Label className={errors.participatedLastYear ? "text-red-500" : ""}>
+                Czy uczestniczył/a Pan/Pani w Jarmarku Bałtyckim w 2024 roku?
+              </Label>
+              <RadioGroup 
+                value={formData.participatedLastYear} 
                 onValueChange={(value) => handleRadioChange('participatedLastYear', value)}
                 className="flex space-x-4"
               >
@@ -166,6 +279,9 @@ const MarketForm: React.FC = () => {
                   <Label htmlFor="participated-no">NIE</Label>
                 </div>
               </RadioGroup>
+              {errors.participatedLastYear && touchedFields.participatedLastYear && (
+                <p className="text-red-500 text-sm mt-1">{errors.participatedLastYear}</p>
+              )}
             </div>
           </div>
         </div>
@@ -176,7 +292,7 @@ const MarketForm: React.FC = () => {
         <h2 className="text-xl font-semibold mb-4 text-baltic-blue">Informacje techniczne dla organizatora</h2>
         <div className="space-y-6">
           <div className="space-y-3">
-            <Label>1. Kategoria wystawcy:</Label>
+            <Label className={errors.category ? "text-red-500" : ""}>1. Kategoria wystawcy:</Label>
             <RadioGroup 
               value={formData.category} 
               onValueChange={(value) => handleRadioChange('category', value)}
@@ -207,12 +323,15 @@ const MarketForm: React.FC = () => {
                 <Label htmlFor="category-6">VI. Gastronomia</Label>
               </div>
             </RadioGroup>
+            {errors.category && touchedFields.category && (
+              <p className="text-red-500 text-sm mt-1">{errors.category}</p>
+            )}
           </div>
 
           <Separator />
           
           <div className="space-y-3">
-            <Label>2. Rodzaj stoiska:</Label>
+            <Label className={errors.boothType ? "text-red-500" : ""}>2. Rodzaj stoiska:</Label>
             <RadioGroup 
               value={formData.boothType} 
               onValueChange={(value) => handleRadioChange('boothType', value)}
@@ -235,25 +354,35 @@ const MarketForm: React.FC = () => {
                 <Label htmlFor="booth-4">Food truck / przyczepa – prosimy podać wymiary (szerokość i głębokość)</Label>
               </div>
             </RadioGroup>
+            {errors.boothType && touchedFields.boothType && (
+              <p className="text-red-500 text-sm mt-1">{errors.boothType}</p>
+            )}
           </div>
           
           {showBoothDimensions && (
             <div className="space-y-2 pl-6">
-              <Label htmlFor="boothDimensions">2.1. Dokładne wymiary namiotu/food trucka:</Label>
+              <Label htmlFor="boothDimensions" className={errors.boothDimensions ? "text-red-500" : ""}>
+                2.1. Dokładne wymiary namiotu/food trucka:
+              </Label>
               <Input 
                 id="boothDimensions" 
                 name="boothDimensions" 
                 value={formData.boothDimensions} 
-                onChange={handleChange} 
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.boothDimensions ? "border-red-500" : ""} 
                 required 
               />
+              {errors.boothDimensions && touchedFields.boothDimensions && (
+                <p className="text-red-500 text-sm mt-1">{errors.boothDimensions}</p>
+              )}
             </div>
           )}
           
           <Separator />
           
           <div className="space-y-3">
-            <Label>3. Podłączenie do prądu (opłata za 4 dni):</Label>
+            <Label className={errors.powerConnection ? "text-red-500" : ""}>3. Podłączenie do prądu (opłata za 4 dni):</Label>
             <RadioGroup 
               value={formData.powerConnection} 
               onValueChange={(value) => handleRadioChange('powerConnection', value)}
@@ -276,33 +405,51 @@ const MarketForm: React.FC = () => {
                 <Label htmlFor="power-4">Nie dotyczy – brak podłączenia do prądu</Label>
               </div>
             </RadioGroup>
+            {errors.powerConnection && touchedFields.powerConnection && (
+              <p className="text-red-500 text-sm mt-1">{errors.powerConnection}</p>
+            )}
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="products">4. Asortyment sprzedaży (proszę podać po przecinku):</Label>
+            <Label htmlFor="products" className={errors.products ? "text-red-500" : ""}>
+              4. Asortyment sprzedaży (proszę podać po przecinku):
+            </Label>
             <Textarea 
               id="products" 
               name="products" 
               value={formData.products} 
-              onChange={handleChange} 
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={errors.products ? "border-red-500" : ""} 
               required 
             />
+            {errors.products && touchedFields.products && (
+              <p className="text-red-500 text-sm mt-1">{errors.products}</p>
+            )}
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="notes">5. Uwagi:</Label>
+            <Label htmlFor="notes" className={errors.notes ? "text-red-500" : ""}>5. Uwagi:</Label>
             <Textarea 
               id="notes" 
               name="notes" 
               value={formData.notes} 
-              onChange={handleChange} 
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={errors.notes ? "border-red-500" : ""} 
               required 
             />
+            {errors.notes && touchedFields.notes && (
+              <p className="text-red-500 text-sm mt-1">{errors.notes}</p>
+            )}
           </div>
           
           <div className="space-y-2">
-            <Label>6. Czy potrzebne jest miejsce parkingowe dla auta?</Label>
-            <RadioGroup value={formData.needsParking} 
+            <Label className={errors.needsParking ? "text-red-500" : ""}>
+              6. Czy potrzebne jest miejsce parkingowe dla auta?
+            </Label>
+            <RadioGroup 
+              value={formData.needsParking} 
               onValueChange={(value) => handleRadioChange('needsParking', value)}
               className="flex space-x-4"
             >
@@ -315,6 +462,9 @@ const MarketForm: React.FC = () => {
                 <Label htmlFor="parking-no">NIE</Label>
               </div>
             </RadioGroup>
+            {errors.needsParking && touchedFields.needsParking && (
+              <p className="text-red-500 text-sm mt-1">{errors.needsParking}</p>
+            )}
           </div>
         </div>
       </div>
@@ -326,36 +476,57 @@ const MarketForm: React.FC = () => {
         
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="location1">1. Pierwszy wybór lokalizacji:</Label>
+            <Label htmlFor="location1" className={errors.location1 ? "text-red-500" : ""}>
+              1. Pierwszy wybór lokalizacji:
+            </Label>
             <Input 
               id="location1" 
               name="location1" 
               value={formData.location1} 
-              onChange={handleChange} 
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={errors.location1 ? "border-red-500" : ""} 
               required 
             />
+            {errors.location1 && touchedFields.location1 && (
+              <p className="text-red-500 text-sm mt-1">{errors.location1}</p>
+            )}
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="location2">2. Drugi wybór lokalizacji:</Label>
+            <Label htmlFor="location2" className={errors.location2 ? "text-red-500" : ""}>
+              2. Drugi wybór lokalizacji:
+            </Label>
             <Input 
               id="location2" 
               name="location2" 
               value={formData.location2} 
-              onChange={handleChange} 
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={errors.location2 ? "border-red-500" : ""} 
               required 
             />
+            {errors.location2 && touchedFields.location2 && (
+              <p className="text-red-500 text-sm mt-1">{errors.location2}</p>
+            )}
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="location3">3. Trzeci wybór lokalizacji:</Label>
+            <Label htmlFor="location3" className={errors.location3 ? "text-red-500" : ""}>
+              3. Trzeci wybór lokalizacji:
+            </Label>
             <Input 
               id="location3" 
               name="location3" 
               value={formData.location3} 
-              onChange={handleChange} 
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={errors.location3 ? "border-red-500" : ""} 
               required 
             />
+            {errors.location3 && touchedFields.location3 && (
+              <p className="text-red-500 text-sm mt-1">{errors.location3}</p>
+            )}
           </div>
         </div>
       </div>
@@ -371,8 +542,9 @@ const MarketForm: React.FC = () => {
               checked={formData.acceptTerms}
               onCheckedChange={(checked: boolean) => handleCheckboxChange('acceptTerms', checked)}
               required 
+              className={errors.acceptTerms ? "border-red-500" : ""}
             />
-            <Label htmlFor="acceptTerms" className="leading-normal">
+            <Label htmlFor="acceptTerms" className={`leading-normal ${errors.acceptTerms ? "text-red-500" : ""}`}>
               Akceptuję regulamin Jarmarku Bałtyckiego. {" "}
               <a 
                 href="#" 
@@ -383,6 +555,9 @@ const MarketForm: React.FC = () => {
               </a>
             </Label>
           </div>
+          {errors.acceptTerms && touchedFields.acceptTerms && (
+            <p className="text-red-500 text-sm ml-6">{errors.acceptTerms}</p>
+          )}
           
           <div className="flex items-top space-x-2">
             <Checkbox 
@@ -390,8 +565,9 @@ const MarketForm: React.FC = () => {
               checked={formData.acceptPrivacy}
               onCheckedChange={(checked: boolean) => handleCheckboxChange('acceptPrivacy', checked)}
               required 
+              className={errors.acceptPrivacy ? "border-red-500" : ""}
             />
-            <Label htmlFor="acceptPrivacy" className="leading-normal">
+            <Label htmlFor="acceptPrivacy" className={`leading-normal ${errors.acceptPrivacy ? "text-red-500" : ""}`}>
               Wyrażam zgodę na przetwarzanie danych osobowych. {" "}
               <a 
                 href="#" 
@@ -402,6 +578,9 @@ const MarketForm: React.FC = () => {
               </a>
             </Label>
           </div>
+          {errors.acceptPrivacy && touchedFields.acceptPrivacy && (
+            <p className="text-red-500 text-sm ml-6">{errors.acceptPrivacy}</p>
+          )}
         </div>
       </div>
       

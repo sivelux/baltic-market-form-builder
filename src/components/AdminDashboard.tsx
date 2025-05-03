@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FormData, getSubmissions, generateCSV, downloadCSV, generateExcel, downloadExcel } from '@/utils/formUtils';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { FileSpreadsheet, FileExcel } from 'lucide-react';
+import { FileSpreadsheet, FileText } from 'lucide-react';
 
 const AdminDashboard: React.FC = () => {
   const { isAuthenticated, logout } = useAuth();
@@ -50,7 +50,7 @@ const AdminDashboard: React.FC = () => {
                 Eksportuj do CSV
               </Button>
               <Button variant="outline" onClick={handleExportExcel}>
-                <FileExcel className="mr-2" />
+                <FileText className="mr-2" />
                 Eksportuj do Excel
               </Button>
               <Button variant="destructive" onClick={logout}>
