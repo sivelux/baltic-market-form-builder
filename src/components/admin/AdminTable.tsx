@@ -10,10 +10,6 @@ import {
   TableRow, 
   TableCell 
 } from "@/components/ui/table";
-import { 
-  Card, 
-  CardContent 
-} from "@/components/ui/card";
 import DetailedView from './DetailedView';
 
 interface AdminTableProps {
@@ -52,7 +48,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow>
+              <TableRow className="bg-gray-50">
                 <TableHead className="w-14">#</TableHead>
                 <TableHead className="w-40">
                   <div className="flex items-center gap-1 cursor-pointer" onClick={toggleSortDirection}>
@@ -79,7 +75,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
                 
                 return (
                   <React.Fragment key={submissionId}>
-                    <TableRow className={isExpanded ? 'bg-gray-50' : ''}>
+                    <TableRow className={isExpanded ? 'border-b-0 border-t' : ''}>
                       <TableCell>{startIndex + index + 1}</TableCell>
                       <TableCell>
                         <div className="text-sm">{submission.submissionDateTime || 'Brak daty'}</div>
@@ -115,11 +111,9 @@ const AdminTable: React.FC<AdminTableProps> = ({
                       </TableCell>
                     </TableRow>
                     {isExpanded && (
-                      <TableRow>
+                      <TableRow className="bg-gray-50">
                         <TableCell colSpan={9} className="p-0 border-t-0">
-                          <div className="p-4 bg-gray-50">
-                            <DetailedView submission={submission} />
-                          </div>
+                          <DetailedView submission={submission} />
                         </TableCell>
                       </TableRow>
                     )}

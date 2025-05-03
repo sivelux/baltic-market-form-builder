@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { FormData, formFieldLabels } from '@/utils/formUtils';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 interface DetailedViewProps {
   submission: FormData;
@@ -18,10 +20,10 @@ const DetailedView: React.FC<DetailedViewProps> = ({ submission }) => {
     if (!value) return null;
     
     return (
-      <div className="bg-white rounded-md p-3 border border-gray-100 shadow-sm">
-        <div className="text-xs font-semibold text-gray-500 mb-1">{label}</div>
+      <div className="mb-3">
+        <div className="text-xs font-semibold text-gray-500">{label}</div>
         {isLongText ? (
-          <div className="max-h-48 overflow-y-auto border border-gray-100 rounded p-2 bg-white text-sm text-gray-900 whitespace-pre-wrap break-words">
+          <div className="max-h-32 overflow-y-auto text-sm text-gray-900 whitespace-pre-wrap break-words">
             {value}
           </div>
         ) : (
@@ -30,128 +32,100 @@ const DetailedView: React.FC<DetailedViewProps> = ({ submission }) => {
       </div>
     );
   };
+
+  const SectionTitle = ({ title }: { title: string }) => (
+    <div className="mb-3">
+      <h3 className="text-sm font-medium text-baltic-blue">{title}</h3>
+      <Separator className="mt-1" />
+    </div>
+  );
   
   return (
-    <div className="py-6">
-      <h2 className="text-2xl font-bold mb-6 text-baltic-blue">Szczegóły zgłoszenia</h2>
-      <div className="space-y-8">
-        {/* Company Information Card */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg text-baltic-blue">
-              Informacje o firmie
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="py-4 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <h2 className="text-lg font-bold mb-4 text-baltic-blue">Szczegóły zgłoszenia</h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Company Information Section */}
+          <Card className="shadow-sm border-gray-200">
+            <CardContent className="p-4">
+              <SectionTitle title="Informacje o firmie" />
               <FieldItem label={formFieldLabels.companyName} value={formatValue(submission.companyName)} />
               <FieldItem label={formFieldLabels.nip} value={formatValue(submission.nip)} />
               <FieldItem label={formFieldLabels.firstName} value={formatValue(submission.firstName)} />
               <FieldItem label={formFieldLabels.lastName} value={formatValue(submission.lastName)} />
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* Contact Information Card */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg text-baltic-blue">
-              Dane kontaktowe
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            </CardContent>
+          </Card>
+          
+          {/* Contact Information Section */}
+          <Card className="shadow-sm border-gray-200">
+            <CardContent className="p-4">
+              <SectionTitle title="Dane kontaktowe" />
               <FieldItem label={formFieldLabels.email} value={formatValue(submission.email)} />
               <FieldItem label={formFieldLabels.phone} value={formatValue(submission.phone)} />
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* Address Information Card */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg text-baltic-blue">
-              Adres
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FieldItem label={formFieldLabels.street} value={formatValue(submission.street)} />
               <FieldItem label={formFieldLabels.city} value={formatValue(submission.city)} />
               <FieldItem label={formFieldLabels.postalCode} value={formatValue(submission.postalCode)} />
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* Booth Information Card */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg text-baltic-blue">
-              Informacje o stoisku
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            </CardContent>
+          </Card>
+          
+          {/* Booth Information Section */}
+          <Card className="shadow-sm border-gray-200">
+            <CardContent className="p-4">
+              <SectionTitle title="Informacje o stoisku" />
               <FieldItem label={formFieldLabels.category} value={formatValue(submission.category)} />
               {submission.location1 && <FieldItem label={formFieldLabels.location1} value={formatValue(submission.location1)} />}
               {submission.location2 && <FieldItem label={formFieldLabels.location2} value={formatValue(submission.location2)} />}
               {submission.location3 && <FieldItem label={formFieldLabels.location3} value={formatValue(submission.location3)} />}
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* Products Information Card - Full width for long text */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg text-baltic-blue">
-              Asortyment
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <FieldItem 
-              label={formFieldLabels.products} 
-              value={formatValue(submission.products)} 
-              isLongText={true} 
-            />
-          </CardContent>
-        </Card>
-        
-        {/* Other Information Card */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg text-baltic-blue">
-              Dodatkowe informacje
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 gap-4">
-              {Object.keys(formFieldLabels)
-                .filter(key => ![
-                  'firstName', 'lastName', 'companyName', 'nip', 'email', 'phone',
-                  'street', 'city', 'postalCode', 'category', 'products',
-                  'location1', 'location2', 'location3'
-                ].includes(key))
-                .map(key => {
-                  const value = submission[key as keyof FormData];
-                  const formattedValue = formatValue(value);
-                  
-                  if (!formattedValue) return null;
-                  
-                  const label = formFieldLabels[key as keyof typeof formFieldLabels];
-                  const isLongText = typeof formattedValue === 'string' && formattedValue.length > 50;
-                  
-                  return (
-                    <FieldItem 
-                      key={key} 
-                      label={label} 
-                      value={formattedValue} 
-                      isLongText={isLongText} 
-                    />
-                  );
-                })}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+          
+          {/* Products Information - Full width */}
+          <Card className="shadow-sm border-gray-200 md:col-span-2 lg:col-span-3">
+            <CardContent className="p-4">
+              <SectionTitle title="Asortyment" />
+              <FieldItem 
+                label={formFieldLabels.products} 
+                value={formatValue(submission.products)} 
+                isLongText={true} 
+              />
+            </CardContent>
+          </Card>
+          
+          {/* Additional Information - Any remaining fields */}
+          <Card className="shadow-sm border-gray-200 md:col-span-2 lg:col-span-3">
+            <CardContent className="p-4">
+              <SectionTitle title="Dodatkowe informacje" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Object.keys(formFieldLabels)
+                  .filter(key => ![
+                    'firstName', 'lastName', 'companyName', 'nip', 'email', 'phone',
+                    'street', 'city', 'postalCode', 'category', 'products',
+                    'location1', 'location2', 'location3'
+                  ].includes(key))
+                  .map(key => {
+                    const value = submission[key as keyof FormData];
+                    const formattedValue = formatValue(value);
+                    
+                    if (!formattedValue) return null;
+                    
+                    const label = formFieldLabels[key as keyof typeof formFieldLabels];
+                    const isLongText = typeof formattedValue === 'string' && formattedValue.length > 50;
+                    
+                    return (
+                      <div key={key} className={isLongText ? "col-span-full" : ""}>
+                        <FieldItem
+                          label={label}
+                          value={formattedValue}
+                          isLongText={isLongText}
+                        />
+                      </div>
+                    );
+                  })}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
