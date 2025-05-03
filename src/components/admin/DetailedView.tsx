@@ -23,7 +23,7 @@ const DetailedView: React.FC<DetailedViewProps> = ({ submission }) => {
       <div className="mb-3">
         <div className="text-xs font-semibold text-gray-500">{label}</div>
         {isLongText ? (
-          <div className="max-h-32 overflow-y-auto text-sm text-gray-900 whitespace-pre-wrap break-words">
+          <div className="max-h-48 overflow-y-auto text-sm text-gray-900 whitespace-pre-wrap break-words">
             {value}
           </div>
         ) : (
@@ -80,7 +80,7 @@ const DetailedView: React.FC<DetailedViewProps> = ({ submission }) => {
             </CardContent>
           </Card>
           
-          {/* Products Information - Full width */}
+          {/* Products Information - Full width with increased height*/}
           <Card className="shadow-sm border-gray-200 md:col-span-2 lg:col-span-3">
             <CardContent className="p-4">
               <SectionTitle title="Asortyment" />
