@@ -17,7 +17,22 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Search, Download, FileDown } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import { Search, Download, FileDown, ArrowUpDown } from 'lucide-react';
 import { FormData, getSubmissions, generateCSV, generateExcel, downloadCSV, downloadExcel, generateEnhancedExcel, formFieldLabels } from '@/utils/formUtils';
 import { toast } from '@/components/ui/sonner';
 
@@ -25,34 +40,75 @@ const AdminDashboard = () => {
   const [submissions, setSubmissions] = useState<FormData[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredSubmissions, setFilteredSubmissions] = useState<FormData[]>([]);
-
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [entriesPerPage, setEntriesPerPage] = useState(25);
+  const [totalPages, setTotalPages] = useState(1);
+  const [displayedSubmissions, setDisplayedSubmissions] = useState<FormData[]>([]);
+  
   // Fetch the submissions when component mounts
   useEffect(() => {
-    const data = getSubmissions();
+    let data = getSubmissions();
+    // Sort by submission date initially (newest first)
+    data = sortSubmissionsByDate(data, 'desc');
     setSubmissions(data);
     setFilteredSubmissions(data);
   }, []);
+
+  // Sort submissions by date
+  const sortSubmissionsByDate = (data: FormData[], direction: 'asc' | 'desc') => {
+    return [...data].sort((a, b) => {
+      const dateA = a.submissionDateTime ? new Date(a.submissionDateTime).getTime() : 0;
+      const dateB = b.submissionDateTime ? new Date(b.submissionDateTime).getTime() : 0;
+      return direction === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+  };
+
+  // Handle sorting toggle
+  const toggleSortDirection = () => {
+    const newDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    setSortDirection(newDirection);
+    const sorted = sortSubmissionsByDate(filteredSubmissions, newDirection);
+    setFilteredSubmissions(sorted);
+  };
 
   // Filter submissions based on search term
   useEffect(() => {
     if (searchTerm === '') {
       setFilteredSubmissions(submissions);
-      return;
+    } else {
+      const term = searchTerm.toLowerCase();
+      const filtered = submissions.filter((submission) => {
+        return (
+          submission.companyName.toLowerCase().includes(term) ||
+          submission.contactPerson.toLowerCase().includes(term) ||
+          submission.email.toLowerCase().includes(term) ||
+          submission.nip.includes(term) ||
+          submission.products.toLowerCase().includes(term)
+        );
+      });
+
+      setFilteredSubmissions(filtered);
     }
-
-    const term = searchTerm.toLowerCase();
-    const filtered = submissions.filter((submission) => {
-      return (
-        submission.companyName.toLowerCase().includes(term) ||
-        submission.contactPerson.toLowerCase().includes(term) ||
-        submission.email.toLowerCase().includes(term) ||
-        submission.nip.includes(term) ||
-        submission.products.toLowerCase().includes(term)
-      );
-    });
-
-    setFilteredSubmissions(filtered);
+    // Reset to first page when search changes
+    setCurrentPage(1);
   }, [searchTerm, submissions]);
+
+  // Paginate submissions
+  useEffect(() => {
+    setTotalPages(Math.max(1, Math.ceil(filteredSubmissions.length / entriesPerPage)));
+    
+    const startIndex = (currentPage - 1) * entriesPerPage;
+    const endIndex = startIndex + entriesPerPage;
+    setDisplayedSubmissions(filteredSubmissions.slice(startIndex, endIndex));
+  }, [filteredSubmissions, currentPage, entriesPerPage]);
+
+  // Change page
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   // Format boolean or string values for display
   const formatValue = (value: any): string => {
@@ -90,8 +146,96 @@ const AdminDashboard = () => {
     }
   };
 
-  // Get the column headers from the formFieldLabels
-  const columnHeaders = Object.values(formFieldLabels);
+  // Generate pagination items
+  const renderPaginationItems = () => {
+    const items = [];
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      // Show all pages if total pages is less than max visible
+      for (let i = 1; i <= totalPages; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink 
+              isActive={currentPage === i} 
+              onClick={() => goToPage(i)}
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+    } else {
+      // Always show first page
+      items.push(
+        <PaginationItem key={1}>
+          <PaginationLink 
+            isActive={currentPage === 1} 
+            onClick={() => goToPage(1)}
+          >
+            1
+          </PaginationLink>
+        </PaginationItem>
+      );
+
+      // Calculate range of pages to show
+      let startPage = Math.max(2, currentPage - 1);
+      let endPage = Math.min(totalPages - 1, currentPage + 1);
+
+      // Adjust if we're near the start or end
+      if (currentPage <= 3) {
+        endPage = Math.min(4, totalPages - 1);
+      } else if (currentPage >= totalPages - 2) {
+        startPage = Math.max(totalPages - 3, 2);
+      }
+
+      // Show ellipsis if needed before middle pages
+      if (startPage > 2) {
+        items.push(
+          <PaginationItem key="start-ellipsis">
+            <PaginationEllipsis />
+          </PaginationItem>
+        );
+      }
+
+      // Middle pages
+      for (let i = startPage; i <= endPage; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink 
+              isActive={currentPage === i} 
+              onClick={() => goToPage(i)}
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        );
+      }
+
+      // Show ellipsis if needed after middle pages
+      if (endPage < totalPages - 1) {
+        items.push(
+          <PaginationItem key="end-ellipsis">
+            <PaginationEllipsis />
+          </PaginationItem>
+        );
+      }
+
+      // Always show last page
+      items.push(
+        <PaginationItem key={totalPages}>
+          <PaginationLink 
+            isActive={currentPage === totalPages} 
+            onClick={() => goToPage(totalPages)}
+          >
+            {totalPages}
+          </PaginationLink>
+        </PaginationItem>
+      );
+    }
+
+    return items;
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -138,20 +282,31 @@ const AdminDashboard = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-12">#</TableHead>
+                  <TableHead 
+                    className="w-32 cursor-pointer"
+                    onClick={toggleSortDirection}
+                  >
+                    <div className="flex items-center">
+                      Data zgłoszenia
+                      <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </div>
+                  </TableHead>
                   <TableHead>Firma</TableHead>
                   <TableHead>Osoba kontaktowa</TableHead>
                   <TableHead>Email / Telefon</TableHead>
                   <TableHead>Kategoria</TableHead>
                   <TableHead>Lokalizacja</TableHead>
-                  <TableHead className="w-32">Data zgłoszenia</TableHead>
                   <TableHead className="w-16">Szczegóły</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredSubmissions.map((submission, index) => (
+                {displayedSubmissions.map((submission, index) => (
                   <React.Fragment key={index}>
                     <TableRow>
-                      <TableCell className="font-medium">{index + 1}</TableCell>
+                      <TableCell className="font-medium">{(currentPage - 1) * entriesPerPage + index + 1}</TableCell>
+                      <TableCell className="text-xs">
+                        {submission.submissionDateTime || 'Brak daty'}
+                      </TableCell>
                       <TableCell className="font-semibold">
                         {submission.companyName}
                         <div className="text-xs text-gray-500">{submission.nip}</div>
@@ -171,9 +326,6 @@ const AdminDashboard = () => {
                       </TableCell>
                       <TableCell className="max-w-48 truncate" title={submission.location1}>
                         {submission.location1}
-                      </TableCell>
-                      <TableCell className="text-xs">
-                        {submission.submissionDateTime || 'Brak daty'}
                       </TableCell>
                       <TableCell>
                         <Accordion type="single" collapsible>
@@ -220,8 +372,56 @@ const AdminDashboard = () => {
           </div>
         )}
       </div>
+
+      {/* Pagination controls and entry display selector */}
+      <div className="mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-500">Pokaż</span>
+          <Select
+            value={entriesPerPage.toString()}
+            onValueChange={(value) => {
+              setEntriesPerPage(Number(value));
+              setCurrentPage(1); // Reset to first page when changing entries per page
+            }}
+          >
+            <SelectTrigger className="w-20">
+              <SelectValue placeholder="25" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="25">25</SelectItem>
+              <SelectItem value="50">50</SelectItem>
+              <SelectItem value="100">100</SelectItem>
+              <SelectItem value="200">200</SelectItem>
+            </SelectContent>
+          </Select>
+          <span className="text-sm text-gray-500">pozycji na stronę</span>
+        </div>
+
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious 
+                onClick={() => goToPage(currentPage - 1)}
+                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+            
+            {renderPaginationItems()}
+            
+            <PaginationItem>
+              <PaginationNext 
+                onClick={() => goToPage(currentPage + 1)}
+                className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
     </div>
   );
 };
+
+// Import PaginationEllipsis for pagination
+const { PaginationEllipsis } = require('@/components/ui/pagination');
 
 export default AdminDashboard;

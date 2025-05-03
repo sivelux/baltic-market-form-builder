@@ -79,17 +79,19 @@ export const initialFormData: FormData = {
 let formSubmissions: FormData[] = [];
 
 export const submitForm = (data: FormData): void => {
-  // Add submission date and time
+  // Add submission date and time in the required format YYYY-MM-DD HH:mm:ss
+  const now = new Date();
   const submissionData = {
     ...data,
-    submissionDateTime: new Date().toLocaleString('pl-PL', {
+    submissionDateTime: now.toLocaleDateString('pl-PL', {
       year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit'
-    })
+      second: '2-digit',
+      hour12: false
+    }).replace(/(\d+)\.(\d+)\.(\d+), (\d+):(\d+):(\d+)/, '$3-$2-$1 $4:$5:$6')
   };
   
   formSubmissions.push(submissionData);
@@ -103,6 +105,7 @@ export const getSubmissions = (): FormData[] => {
 
 // Map form field names to Polish column headers
 export const formFieldLabels: Record<string, string> = {
+  submissionDateTime: "Data i godzina zgłoszenia",
   companyName: "Pełna nazwa firmy",
   contactPerson: "Imię i nazwisko osoby zgłaszającej",
   street: "Ulica",
@@ -123,12 +126,12 @@ export const formFieldLabels: Record<string, string> = {
   location2: "Drugi wybór lokalizacji",
   location3: "Trzeci wybór lokalizacji",
   acceptTerms: "Akceptacja regulaminu Jarmarku Bałtyckiego",
-  acceptPrivacy: "Zgoda na przetwarzanie danych osobowych",
-  submissionDateTime: "Data i godzina zgłoszenia"
+  acceptPrivacy: "Zgoda na przetwarzanie danych osobowych"
 };
 
 // Field descriptions for the second worksheet
 export const formFieldDescriptions: Record<string, string> = {
+  submissionDateTime: "Data i godzina przesłania zgłoszenia w formacie RRRR-MM-DD GG:MM:SS",
   companyName: "Pełna nazwa firmy, pod którą prowadzona jest działalność",
   contactPerson: "Imię i nazwisko osoby odpowiedzialnej za zgłoszenie",
   street: "Nazwa ulicy wraz z numerem budynku/lokalu",
@@ -149,23 +152,30 @@ export const formFieldDescriptions: Record<string, string> = {
   location2: "Preferowana lokalizacja stoiska - drugi wybór",
   location3: "Preferowana lokalizacja stoiska - trzeci wybór",
   acceptTerms: "Potwierdzenie zapoznania się i akceptacji regulaminu Jarmarku",
-  acceptPrivacy: "Zgoda na przetwarzanie danych osobowych zgodnie z RODO",
-  submissionDateTime: "Data i godzina przesłania zgłoszenia"
+  acceptPrivacy: "Zgoda na przetwarzanie danych osobowych zgodnie z RODO"
 };
 
 // Helper to format boolean values in Polish
 export const formatBooleanValue = (value: boolean): string => value ? "TAK" : "NIE";
 
+// Ensure field order for export - putting submissionDateTime first
+export const getOrderedFieldNames = (): string[] => {
+  return ['submissionDateTime', ...Object.keys(initialFormData)];
+};
+
 // Convert form data to CSV with proper UTF-8 handling
 export const generateCSV = (submissions: FormData[]): string => {
   if (submissions.length === 0) return "";
   
+  // Get ordered field names
+  const orderedFields = getOrderedFieldNames();
+  
   // Use the field labels map to create headers in Polish
-  const headers = Object.keys(formFieldLabels).map(key => formFieldLabels[key]).join(",");
+  const headers = orderedFields.map(key => formFieldLabels[key] || key).join(",");
   
   // Format each submission row
   const rows = submissions.map(submission => {
-    return Object.keys(formFieldLabels).map(key => {
+    return orderedFields.map(key => {
       const value = submission[key as keyof FormData];
       
       // Format boolean values as TAK/NIE
@@ -204,16 +214,19 @@ export const generateEnhancedExcel = (submissions: FormData[]): string => {
   // Add BOM (Byte Order Mark) for UTF-8
   const BOM = "\uFEFF";
   
+  // Get ordered field names
+  const orderedFields = getOrderedFieldNames();
+  
   // Worksheet 1: Form Submissions
   let excelContent = "WORKSHEET: Zgłoszenia\n";
   
   // Use the field labels map to create headers in Polish
-  const headers = Object.keys(formFieldLabels).map(key => formFieldLabels[key]).join("\t");
+  const headers = orderedFields.map(key => formFieldLabels[key] || key).join("\t");
   excelContent += headers + "\n";
   
   // Format each submission row with tab separators (better for Excel)
   submissions.forEach(submission => {
-    const rowValues = Object.keys(formFieldLabels).map(key => {
+    const rowValues = orderedFields.map(key => {
       const value = submission[key as keyof FormData];
       
       // Format boolean values as TAK/NIE
@@ -231,9 +244,9 @@ export const generateEnhancedExcel = (submissions: FormData[]): string => {
   excelContent += "\nWORKSHEET: Opis pól\n";
   excelContent += "Nazwa pola\tOpis\n";
   
-  // Add each field description
-  Object.keys(formFieldLabels).forEach(key => {
-    excelContent += formFieldLabels[key] + "\t" + (formFieldDescriptions[key] || "") + "\n";
+  // Add each field description in the same order
+  orderedFields.forEach(key => {
+    excelContent += (formFieldLabels[key] || key) + "\t" + (formFieldDescriptions[key] || "") + "\n";
   });
   
   return BOM + excelContent;
