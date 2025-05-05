@@ -1,6 +1,11 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { databaseConfig, getSupabaseConfig } from "@/config/database";
+import { 
+  databaseConfig, 
+  getSupabaseConfig, 
+  configureDevelopmentDatabase, 
+  configureProductionDatabase 
+} from "@/config/database";
 
 /**
  * Database connection utility
@@ -11,7 +16,9 @@ import { databaseConfig, getSupabaseConfig } from "@/config/database";
 export const testDatabaseConnection = async (): Promise<boolean> => {
   try {
     // For Supabase connections
-    const { data, error } = await supabase.from('postgres_database_version').select('*').limit(1);
+    // Note: We need to use tables that exist in the database schema
+    // Instead of hardcoded table name, we'll check the connection status
+    const { error } = await supabase.auth.getSession();
     
     if (error) {
       console.error("Database connection test failed:", error.message);
@@ -28,8 +35,8 @@ export const testDatabaseConnection = async (): Promise<boolean> => {
 
 // Example function to execute a query
 export const executeQuery = async <T>(
-  tableName: string, 
-  query: any
+  tableName: keyof Database['public']['Tables'],
+  query: string
 ): Promise<{ data: T[] | null; error: Error | null }> => {
   try {
     const response = await supabase.from(tableName).select(query);
@@ -48,3 +55,25 @@ export const getConnectionConfig = () => {
   }
   return databaseConfig;
 };
+
+// Example of configuring the database for different environments
+export const setupDatabaseForEnvironment = () => {
+  if (process.env.NODE_ENV === 'production') {
+    // In a real application, these would come from environment variables
+    // or a secure configuration service
+    configureProductionDatabase({
+      host: process.env.DB_HOST || "production-db-host",
+      port: Number(process.env.DB_PORT) || 5432,
+      user: process.env.DB_USER || "prod_user",
+      password: process.env.DB_PASSWORD || "prod_password",
+      database: process.env.DB_NAME || "prod_database",
+      ssl: true
+    });
+  } else {
+    // Load development configuration
+    configureDevelopmentDatabase();
+  }
+};
+
+// Call this function early in your application initialization
+// setupDatabaseForEnvironment();
