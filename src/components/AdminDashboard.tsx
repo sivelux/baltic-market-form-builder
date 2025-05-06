@@ -1,9 +1,14 @@
+
 import React, { useState, useEffect } from 'react';
 import { FormData, getSubmissions } from '@/utils/formUtils';
 import AdminHeader from './admin/AdminHeader';
 import AdminSearchBar from './admin/AdminSearchBar';
 import AdminTable from './admin/AdminTable';
 import AdminPagination from './admin/AdminPagination';
+import ChangePasswordForm from './admin/ChangePasswordForm';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Lock } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [submissions, setSubmissions] = useState<FormData[]>([]);
@@ -14,6 +19,7 @@ const AdminDashboard = () => {
   const [entriesPerPage, setEntriesPerPage] = useState(25);
   const [totalPages, setTotalPages] = useState(1);
   const [displayedSubmissions, setDisplayedSubmissions] = useState<FormData[]>([]);
+  const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
   
   // Fetch the submissions when component mounts
   useEffect(() => {
@@ -75,7 +81,23 @@ const AdminDashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <AdminHeader title="Panel Administratora - Zgłoszenia" />
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+        <AdminHeader title="Panel Administratora - Zgłoszenia" />
+        
+        <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
+          <DialogTrigger asChild>
+            <Button 
+              variant="outline" 
+              className="ml-0 md:ml-4 mt-4 md:mt-0 bg-baltic-blue text-white hover:bg-baltic-blue/80"
+            >
+              <Lock className="mr-2 h-4 w-4" /> Zmień hasło
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <ChangePasswordForm />
+          </DialogContent>
+        </Dialog>
+      </div>
       
       <AdminSearchBar 
         searchTerm={searchTerm}
