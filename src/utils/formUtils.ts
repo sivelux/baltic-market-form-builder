@@ -22,6 +22,7 @@ export const validatePostalCode = (postalCode: string): boolean => {
 };
 
 export interface FormData {
+  id: string;
   companyName: string;
   firstName: string; // Changed from contactPerson to firstName
   lastName: string;  // Added lastName field
@@ -52,6 +53,7 @@ export interface FormErrors {
 }
 
 export const initialFormData: FormData = {
+  id: "",
   companyName: "",
   firstName: "",    // Changed from contactPerson to firstName
   lastName: "",     // Added lastName field

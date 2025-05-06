@@ -1,7 +1,7 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { FormData } from '@/utils/formUtils';
-import { Eye } from 'lucide-react';
+import { Eye, Trash2 } from 'lucide-react';
 import { 
   Table, 
   TableHeader, 
@@ -11,6 +11,18 @@ import {
   TableCell 
 } from "@/components/ui/table";
 import DetailedView from './DetailedView';
+import { useAuth } from '@/context/AuthContext';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface AdminTableProps {
   displayedSubmissions: FormData[];
@@ -19,6 +31,7 @@ interface AdminTableProps {
   entriesPerPage: number;
   sortDirection: 'asc' | 'desc';
   toggleSortDirection: () => void;
+  refreshSubmissions: () => void;
 }
 
 const AdminTable: React.FC<AdminTableProps> = ({
@@ -27,15 +40,27 @@ const AdminTable: React.FC<AdminTableProps> = ({
   currentPage,
   entriesPerPage,
   sortDirection,
-  toggleSortDirection
+  toggleSortDirection,
+  refreshSubmissions
 }) => {
-  const [expandedRows, setExpandedRows] = React.useState<Record<string, boolean>>({});
+  const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
+  const { deleteSubmission } = useAuth();
+  const [deleting, setDeleting] = useState(false);
 
   const toggleExpandRow = (id: string) => {
     setExpandedRows(prev => ({
       ...prev,
       [id]: !prev[id]
     }));
+  };
+
+  const handleDelete = async (id: string) => {
+    setDeleting(true);
+    const success = await deleteSubmission(id);
+    if (success) {
+      refreshSubmissions();
+    }
+    setDeleting(false);
   };
 
   return (
@@ -64,7 +89,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
                 <TableHead>Kategoria</TableHead>
                 <TableHead>Lokalizacja</TableHead>
                 <TableHead>Asortyment</TableHead>
-                <TableHead className="text-right">Szczegóły</TableHead>
+                <TableHead className="text-right">Akcje</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -101,13 +126,42 @@ const AdminTable: React.FC<AdminTableProps> = ({
                         <div className="truncate max-w-[200px]">{submission.products}</div>
                       </TableCell>
                       <TableCell className="text-right">
-                        <button
-                          onClick={() => toggleExpandRow(submissionId)}
-                          className="bg-baltic-blue text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-baltic-orange transition-colors"
-                          aria-label="Szczegóły"
-                        >
-                          <Eye size={14} />
-                        </button>
+                        <div className="flex justify-end space-x-2">
+                          <button
+                            onClick={() => toggleExpandRow(submissionId)}
+                            className="bg-baltic-blue text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-baltic-orange transition-colors"
+                            aria-label="Szczegóły"
+                          >
+                            <Eye size={14} />
+                          </button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <button
+                                className="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
+                                aria-label="Usuń"
+                                disabled={deleting}
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Potwierdzenie usunięcia</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Czy na pewno chcesz usunąć to zgłoszenie? Tej operacji nie można cofnąć.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Anuluj</AlertDialogCancel>
+                                <AlertDialogAction 
+                                  onClick={() => handleDelete(submission.id)}
+                                  className="bg-red-500 hover:bg-red-600">
+                                  Usuń
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
                       </TableCell>
                     </TableRow>
                     {isExpanded && (

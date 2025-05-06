@@ -2,12 +2,14 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   login: (username: string, password: string) => boolean;
   logout: () => void;
   changePassword: (currentPassword: string, newPassword: string) => boolean;
+  deleteSubmission: (id: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -47,8 +49,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return true;
   };
 
+  // Delete submission functionality
+  const deleteSubmission = async (id: string) => {
+    try {
+      const { error } = await supabase.from('submissions').delete().eq('id', id);
+      
+      if (error) {
+        console.error("Error deleting submission:", error);
+        toast.error("Wystąpił błąd podczas usuwania zgłoszenia");
+        return false;
+      }
+      
+      toast.success("Zgłoszenie zostało usunięte pomyślnie");
+      return true;
+    } catch (error) {
+      console.error("Error deleting submission:", error);
+      toast.error("Wystąpił błąd podczas usuwania zgłoszenia");
+      return false;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, changePassword }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, changePassword, deleteSubmission }}>
       {children}
     </AuthContext.Provider>
   );

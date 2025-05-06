@@ -23,12 +23,16 @@ const AdminDashboard = () => {
   
   // Fetch the submissions when component mounts
   useEffect(() => {
+    loadSubmissions();
+  }, []);
+
+  const loadSubmissions = () => {
     let data = getSubmissions();
     // Sort by submission date initially (newest first)
     data = sortSubmissionsByDate(data, 'desc');
     setSubmissions(data);
     setFilteredSubmissions(data);
-  }, []);
+  };
 
   // Sort submissions by date
   const sortSubmissionsByDate = (data: FormData[], direction: 'asc' | 'desc') => {
@@ -89,6 +93,7 @@ const AdminDashboard = () => {
             <Button 
               variant="outline" 
               className="ml-0 md:ml-4 mt-4 md:mt-0 bg-baltic-blue text-white hover:bg-baltic-blue/80"
+              size="sm"
             >
               <Lock className="mr-2 h-4 w-4" /> Zmień hasło
             </Button>
@@ -113,6 +118,7 @@ const AdminDashboard = () => {
           entriesPerPage={entriesPerPage}
           sortDirection={sortDirection}
           toggleSortDirection={toggleSortDirection}
+          refreshSubmissions={loadSubmissions}
         />
       </div>
       
