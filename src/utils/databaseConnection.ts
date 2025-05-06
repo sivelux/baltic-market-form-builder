@@ -1,5 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { 
   databaseConfig, 
   getSupabaseConfig, 
@@ -33,16 +34,15 @@ export const testDatabaseConnection = async (): Promise<boolean> => {
   }
 };
 
-// Example function to execute a query
+// Example function to execute a query with proper typing
 export const executeQuery = async <T>(
-  tableName: keyof Database['public']['Tables'],
   query: string
 ): Promise<{ data: T[] | null; error: Error | null }> => {
   try {
-    const response = await supabase.from(tableName).select(query);
+    const response = await supabase.from('submissions').select(query);
     return { data: response.data as T[], error: response.error };
   } catch (error) {
-    console.error(`Error executing query on ${tableName}:`, error);
+    console.error(`Error executing query on submissions:`, error);
     return { data: null, error: error as Error };
   }
 };
