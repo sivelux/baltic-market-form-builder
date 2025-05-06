@@ -1,0 +1,215 @@
+
+<!-- WP Form Lite Template for Jarmark Bałtycki Application Form -->
+
+<!-- Section 1: Dane wystawcy -->
+<div class="wpforms-field-container">
+  <h3>Dane wystawcy</h3>
+  
+  <!-- Company Name -->
+  <div class="wpforms-field wpforms-field-text" data-field-id="companyName">
+    <label class="wpforms-field-label" for="wpforms-field-companyName">Pełna nazwa firmy: <span class="wpforms-required-label">*</span></label>
+    <input type="text" id="wpforms-field-companyName" class="wpforms-field-large" name="wpforms[companyName]" required>
+  </div>
+  
+  <!-- First Name -->
+  <div class="wpforms-field wpforms-field-text" data-field-id="firstName">
+    <label class="wpforms-field-label" for="wpforms-field-firstName">Imię: <span class="wpforms-required-label">*</span></label>
+    <input type="text" id="wpforms-field-firstName" class="wpforms-field-medium" name="wpforms[firstName]" required>
+  </div>
+  
+  <!-- Last Name -->
+  <div class="wpforms-field wpforms-field-text" data-field-id="lastName">
+    <label class="wpforms-field-label" for="wpforms-field-lastName">Nazwisko: <span class="wpforms-required-label">*</span></label>
+    <input type="text" id="wpforms-field-lastName" class="wpforms-field-medium" name="wpforms[lastName]" required>
+  </div>
+  
+  <!-- Street -->
+  <div class="wpforms-field wpforms-field-text" data-field-id="street">
+    <label class="wpforms-field-label" for="wpforms-field-street">Ulica: <span class="wpforms-required-label">*</span></label>
+    <input type="text" id="wpforms-field-street" class="wpforms-field-large" name="wpforms[street]" required>
+  </div>
+  
+  <!-- Postal Code -->
+  <div class="wpforms-field wpforms-field-text" data-field-id="postalCode">
+    <label class="wpforms-field-label" for="wpforms-field-postalCode">Kod pocztowy: <span class="wpforms-required-label">*</span></label>
+    <input type="text" id="wpforms-field-postalCode" class="wpforms-field-small" name="wpforms[postalCode]" placeholder="XX-XXX" maxlength="6" required>
+    <div class="wpforms-field-description">Format: XX-XXX</div>
+  </div>
+  
+  <!-- City -->
+  <div class="wpforms-field wpforms-field-text" data-field-id="city">
+    <label class="wpforms-field-label" for="wpforms-field-city">Miejscowość: <span class="wpforms-required-label">*</span></label>
+    <input type="text" id="wpforms-field-city" class="wpforms-field-medium" name="wpforms[city]" required>
+  </div>
+  
+  <!-- NIP -->
+  <div class="wpforms-field wpforms-field-text" data-field-id="nip">
+    <label class="wpforms-field-label" for="wpforms-field-nip">NIP: <span class="wpforms-required-label">*</span></label>
+    <input type="text" id="wpforms-field-nip" class="wpforms-field-medium" name="wpforms[nip]" required>
+  </div>
+  
+  <!-- Email -->
+  <div class="wpforms-field wpforms-field-email" data-field-id="email">
+    <label class="wpforms-field-label" for="wpforms-field-email">Adres e-mail: <span class="wpforms-required-label">*</span></label>
+    <input type="email" id="wpforms-field-email" class="wpforms-field-medium" name="wpforms[email]" required>
+  </div>
+  
+  <!-- Phone -->
+  <div class="wpforms-field wpforms-field-phone" data-field-id="phone">
+    <label class="wpforms-field-label" for="wpforms-field-phone">Numer telefonu: <span class="wpforms-required-label">*</span></label>
+    <input type="tel" id="wpforms-field-phone" class="wpforms-field-medium" name="wpforms[phone]" required>
+  </div>
+  
+  <!-- Previous participation -->
+  <div class="wpforms-field wpforms-field-radio" data-field-id="participatedLastYear">
+    <label class="wpforms-field-label" for="wpforms-field-participatedLastYear">Czy uczestniczył/a Pan/Pani w Jarmarku Bałtyckim w 2024 roku? <span class="wpforms-required-label">*</span></label>
+    <ul class="wpforms-field-radio-buttons">
+      <li><input type="radio" id="wpforms-field-participatedLastYear-1" name="wpforms[participatedLastYear]" value="TAK" required><label class="wpforms-field-label-inline" for="wpforms-field-participatedLastYear-1">TAK</label></li>
+      <li><input type="radio" id="wpforms-field-participatedLastYear-2" name="wpforms[participatedLastYear]" value="NIE" required><label class="wpforms-field-label-inline" for="wpforms-field-participatedLastYear-2">NIE</label></li>
+    </ul>
+  </div>
+</div>
+
+<!-- Section 2: Informacje techniczne dla organizatora -->
+<div class="wpforms-field-container">
+  <h3>Informacje techniczne dla organizatora</h3>
+  
+  <!-- Exhibitor Category -->
+  <div class="wpforms-field wpforms-field-radio" data-field-id="category">
+    <label class="wpforms-field-label" for="wpforms-field-category">1. Kategoria wystawcy: <span class="wpforms-required-label">*</span></label>
+    <ul class="wpforms-field-radio-buttons">
+      <li><input type="radio" id="wpforms-field-category-1" name="wpforms[category]" value="Artyści rękodzielnicy" required><label class="wpforms-field-label-inline" for="wpforms-field-category-1">Artyści rękodzielnicy</label></li>
+      <li><input type="radio" id="wpforms-field-category-2" name="wpforms[category]" value="Wytwórcy produktów tradycyjnych i regionalnych z województwa zachodniopomorskiego" required><label class="wpforms-field-label-inline" for="wpforms-field-category-2">Wytwórcy produktów tradycyjnych i regionalnych z województwa zachodniopomorskiego</label></li>
+      <li><input type="radio" id="wpforms-field-category-4" name="wpforms[category]" value="Producenci artykułów spożywczych" required><label class="wpforms-field-label-inline" for="wpforms-field-category-4">Producenci artykułów spożywczych</label></li>
+      <li><input type="radio" id="wpforms-field-category-5" name="wpforms[category]" value="Winiarze i producenci nalewek" required><label class="wpforms-field-label-inline" for="wpforms-field-category-5">Winiarze i producenci nalewek</label></li>
+      <li><input type="radio" id="wpforms-field-category-6" name="wpforms[category]" value="Gastronomia" required><label class="wpforms-field-label-inline" for="wpforms-field-category-6">Gastronomia</label></li>
+      <li><input type="radio" id="wpforms-field-category-3" name="wpforms[category]" value="Pozostali (np. pośrednicy, handlarze itp.)" required><label class="wpforms-field-label-inline" for="wpforms-field-category-3">Pozostali (np. pośrednicy, handlarze itp.)</label></li>
+    </ul>
+  </div>
+  
+  <!-- Booth Type -->
+  <div class="wpforms-field wpforms-field-radio" data-field-id="boothType">
+    <label class="wpforms-field-label" for="wpforms-field-boothType">2. Rodzaj stoiska: <span class="wpforms-required-label">*</span></label>
+    <ul class="wpforms-field-radio-buttons">
+      <li><input type="radio" id="wpforms-field-boothType-1" name="wpforms[boothType]" value="Namiot organizatora – 3 m × 3 m" required><label class="wpforms-field-label-inline" for="wpforms-field-boothType-1">Namiot organizatora – 3 m × 3 m</label></li>
+      <li><input type="radio" id="wpforms-field-boothType-2" name="wpforms[boothType]" value="Namiot własny – 3 m × 3 m" required><label class="wpforms-field-label-inline" for="wpforms-field-boothType-2">Namiot własny – 3 m × 3 m</label></li>
+      <li><input type="radio" id="wpforms-field-boothType-3" name="wpforms[boothType]" value="Namiot własny, inny wymiar" required><label class="wpforms-field-label-inline" for="wpforms-field-boothType-3">Namiot własny, inny wymiar</label></li>
+      <li><input type="radio" id="wpforms-field-boothType-4" name="wpforms[boothType]" value="Food truck / przyczepa" required><label class="wpforms-field-label-inline" for="wpforms-field-boothType-4">Food truck / przyczepa – prosimy podać wymiary (szerokość i głębokość)</label></li>
+    </ul>
+  </div>
+  
+  <!-- Booth Dimensions (conditionally shown) -->
+  <div class="wpforms-field wpforms-field-text wpforms-conditional-field" data-field-id="boothDimensions" data-conditional-id="boothType" data-conditional-value="Namiot własny, inny wymiar,Food truck / przyczepa">
+    <label class="wpforms-field-label" for="wpforms-field-boothDimensions">2.1. Dokładne wymiary namiotu/food trucka: <span class="wpforms-required-label">*</span></label>
+    <input type="text" id="wpforms-field-boothDimensions" class="wpforms-field-medium" name="wpforms[boothDimensions]">
+  </div>
+  
+  <!-- Power Connection -->
+  <div class="wpforms-field wpforms-field-radio" data-field-id="powerConnection">
+    <label class="wpforms-field-label" for="wpforms-field-powerConnection">3. Podłączenie do prądu (opłata za 4 dni): <span class="wpforms-required-label">*</span></label>
+    <ul class="wpforms-field-radio-buttons">
+      <li><input type="radio" id="wpforms-field-powerConnection-1" name="wpforms[powerConnection]" value="Do 2 kW – 200 zł + VAT" required><label class="wpforms-field-label-inline" for="wpforms-field-powerConnection-1">Do 2 kW – 200 zł + VAT</label></li>
+      <li><input type="radio" id="wpforms-field-powerConnection-2" name="wpforms[powerConnection]" value="Do 6 kW – 500 zł + VAT" required><label class="wpforms-field-label-inline" for="wpforms-field-powerConnection-2">Do 6 kW – 500 zł + VAT</label></li>
+      <li><input type="radio" id="wpforms-field-powerConnection-3" name="wpforms[powerConnection]" value="Powyżej 6 kW – cena do uzgodnienia" required><label class="wpforms-field-label-inline" for="wpforms-field-powerConnection-3">Powyżej 6 kW – cena do uzgodnienia</label></li>
+      <li><input type="radio" id="wpforms-field-powerConnection-4" name="wpforms[powerConnection]" value="Brak – zakaz podłączenia do prądu" required><label class="wpforms-field-label-inline" for="wpforms-field-powerConnection-4">Nie dotyczy – brak podłączenia do prądu</label></li>
+    </ul>
+  </div>
+  
+  <!-- Products -->
+  <div class="wpforms-field wpforms-field-textarea" data-field-id="products">
+    <label class="wpforms-field-label" for="wpforms-field-products">4. Asortyment sprzedaży (proszę podać po przecinku): <span class="wpforms-required-label">*</span></label>
+    <textarea id="wpforms-field-products" class="wpforms-field-large" name="wpforms[products]" required></textarea>
+  </div>
+  
+  <!-- Notes (optional) -->
+  <div class="wpforms-field wpforms-field-textarea" data-field-id="notes">
+    <label class="wpforms-field-label" for="wpforms-field-notes">5. Uwagi (opcjonalnie):</label>
+    <textarea id="wpforms-field-notes" class="wpforms-field-large" name="wpforms[notes]"></textarea>
+  </div>
+  
+  <!-- Parking Needed -->
+  <div class="wpforms-field wpforms-field-radio" data-field-id="needsParking">
+    <label class="wpforms-field-label" for="wpforms-field-needsParking">6. Czy potrzebne jest miejsce parkingowe dla auta? <span class="wpforms-required-label">*</span></label>
+    <ul class="wpforms-field-radio-buttons">
+      <li><input type="radio" id="wpforms-field-needsParking-1" name="wpforms[needsParking]" value="TAK" required><label class="wpforms-field-label-inline" for="wpforms-field-needsParking-1">TAK</label></li>
+      <li><input type="radio" id="wpforms-field-needsParking-2" name="wpforms[needsParking]" value="NIE" required><label class="wpforms-field-label-inline" for="wpforms-field-needsParking-2">NIE</label></li>
+    </ul>
+  </div>
+</div>
+
+<!-- Section 3: Wybór lokalizacji -->
+<div class="wpforms-field-container">
+  <h3>Wybór lokalizacji</h3>
+  
+  <!-- Map Download Link - This will need to be added in WP Forms with a custom HTML field -->
+  <div class="wpforms-field wpforms-field-html" data-field-id="mapDownload">
+    <div class="wpforms-field-html-wrap">
+      <p><a href="[INSERT_MAP_URL]" target="_blank" rel="noopener noreferrer" download="mapa-jarmark-baltycki.pdf">📍 Pobierz mapę wydarzenia (PDF)</a></p>
+      <p class="wpforms-field-description"><em>(prosimy o wskazanie kilku preferencji – w razie niedostępności pierwszego wyboru)</em></p>
+    </div>
+  </div>
+  
+  <!-- Location preferences -->
+  <div class="wpforms-field wpforms-field-text" data-field-id="location1">
+    <label class="wpforms-field-label" for="wpforms-field-location1">1. Pierwszy wybór lokalizacji: <span class="wpforms-required-label">*</span></label>
+    <input type="text" id="wpforms-field-location1" class="wpforms-field-medium" name="wpforms[location1]" required>
+  </div>
+  
+  <div class="wpforms-field wpforms-field-text" data-field-id="location2">
+    <label class="wpforms-field-label" for="wpforms-field-location2">2. Drugi wybór lokalizacji: <span class="wpforms-required-label">*</span></label>
+    <input type="text" id="wpforms-field-location2" class="wpforms-field-medium" name="wpforms[location2]" required>
+  </div>
+  
+  <div class="wpforms-field wpforms-field-text" data-field-id="location3">
+    <label class="wpforms-field-label" for="wpforms-field-location3">3. Trzeci wybór lokalizacji: <span class="wpforms-required-label">*</span></label>
+    <input type="text" id="wpforms-field-location3" class="wpforms-field-medium" name="wpforms[location3]" required>
+  </div>
+</div>
+
+<!-- Section 4: Akceptacja warunków -->
+<div class="wpforms-field-container">
+  <h3>Akceptacja warunków</h3>
+  
+  <!-- Terms Acceptance -->
+  <div class="wpforms-field wpforms-field-checkbox" data-field-id="acceptTerms">
+    <ul class="wpforms-field-checkbox-options">
+      <li><input type="checkbox" id="wpforms-field-acceptTerms" name="wpforms[acceptTerms]" value="1" required><label class="wpforms-field-label-inline" for="wpforms-field-acceptTerms">Akceptuję regulamin Jarmarku Bałtyckiego. <a href="#" target="_blank">[link do regulaminu]</a></label></li>
+    </ul>
+  </div>
+  
+  <!-- Privacy Policy Acceptance -->
+  <div class="wpforms-field wpforms-field-checkbox" data-field-id="acceptPrivacy">
+    <ul class="wpforms-field-checkbox-options">
+      <li><input type="checkbox" id="wpforms-field-acceptPrivacy" name="wpforms[acceptPrivacy]" value="1" required><label class="wpforms-field-label-inline" for="wpforms-field-acceptPrivacy">Wyrażam zgodę na przetwarzanie danych osobowych. <a href="#" target="_blank">[link do informacji o przetwarzaniu danych osobowych]</a></label></li>
+    </ul>
+  </div>
+</div>
+
+<!-- Submit Button - WP Form Lite will add this automatically -->
+<!-- 
+<div class="wpforms-submit-container">
+  <button type="submit" name="wpforms[submit]" class="wpforms-submit" id="wpforms-submit-[FORM_ID]">Wyślij zgłoszenie</button>
+</div>
+-->
+
+<!-- Event Schedule - This will need to be added in WordPress after the form -->
+<!--
+<div class="event-schedule">
+  <h3>Terminarz Jarmarku</h3>
+  <p>Informacje o terminach montażu stoisk i harmonogramie wydarzenia będą dostępne po akceptacji zgłoszenia.</p>
+</div>
+-->
+
+<!-- Instructions for importing to WP Form Lite -->
+<!--
+INSTRUKCJA:
+1. Utwórz nowy formularz w WP Form Lite
+2. Użyj importera formularzy lub ręcznie dodaj pola zgodnie z powyższym szablonem
+3. Skonfiguruj kondicional logic dla pól boothDimensions
+4. Dodaj pola HTML dla informacji o mapie i harmonogramie
+5. Skonfiguruj potwierdzenia i powiadomienia e-mail
+6. Umieść formularz na stronie za pomocą shortcode
+
+Uwaga: Kondicional logic dla pola "boothDimensions" powinien pokazywać to pole tylko gdy w "boothType" 
+wybrano "Namiot własny, inny wymiar" lub "Food truck / przyczepa"
+-->
